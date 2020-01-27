@@ -1,5 +1,5 @@
 # Optimization Techniques
-This repository will comprise primary optimization algorithms implementations in Python language. 
+This repository will comprise primary optimization algorithms based on Gradient Descent implementations in Python language. 
 
 ## Algorithms
 1. [Gradient Descent](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescent2D.ipynb)
@@ -7,7 +7,7 @@ This repository will comprise primary optimization algorithms implementations in
 3. [Gradient Descent with Momentum](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescentwithMomentum.ipynb)
 
 ### Resources
-I listed useful resources to learn Optimization Techniques.
+I listed useful links to learn Optimization Techniques.
 
 #### Articles
 1. [Optimizers Explained - Adam, Momentum and Stochastic Gradient Descent](https://mlfromscratch.com/optimizers-explained/#/)
