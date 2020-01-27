@@ -7,7 +7,7 @@ This repository will comprise primary optimization algorithms based on Gradient 
 3. [Gradient Descent with Momentum](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescentwithMomentum.ipynb)
 
 ### Resources
-I listed useful links to learn Optimization Techniques.
+I put useful links below to learn Optimization Techniques.
 
 #### Articles
 1. [Optimizers Explained - Adam, Momentum and Stochastic Gradient Descent](https://mlfromscratch.com/optimizers-explained/#/)
