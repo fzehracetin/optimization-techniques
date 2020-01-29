@@ -1,5 +1,5 @@
 # Optimization Techniques
-This repository will comprise primary optimization algorithms based on Gradient Descent implementations in Python language. 
+This repository will comprise primary optimization algorithms implementations in Python language. These algorithms based on Gradient Descent Algorithm.
 
 ## Algorithms
 1. [Gradient Descent Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescent2D.ipynb)
