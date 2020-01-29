@@ -2,10 +2,11 @@
 This repository will comprise primary optimization algorithms based on Gradient Descent implementations in Python language. 
 
 ## Algorithms
-1. [Gradient Descent](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescent2D.ipynb)
-2. [Steepest Descent](https://github.com/fzehracetin/optimization-techniques/blob/master/SteepestDescent.ipynb)
-3. [Gradient Descent with Momentum](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescentwithMomentum.ipynb)
-4. [RMSprop](https://github.com/fzehracetin/optimization-techniques/blob/master/RMSprop.ipynb)
+1. [Gradient Descent Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescent2D.ipynb)
+2. [Steepest Descent Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/SteepestDescent.ipynb)
+3. [Gradient Descent with Momentum Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescentwithMomentum.ipynb)
+4. [RMSprop Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/RMSprop.ipynb)
+5. [Adam Optimization Algorithm] (https://github.com/fzehracetin/optimization-techniques/blob/master/Adam.ipynb)
 
 ### Resources
 I put useful links below to learn Optimization Techniques.
