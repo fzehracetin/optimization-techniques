@@ -5,6 +5,7 @@ This repository will comprise primary optimization algorithms based on Gradient 
 1. [Gradient Descent](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescent2D.ipynb)
 2. [Steepest Descent](https://github.com/fzehracetin/optimization-techniques/blob/master/SteepestDescent.ipynb)
 3. [Gradient Descent with Momentum](https://github.com/fzehracetin/optimization-techniques/blob/master/GradientDescentwithMomentum.ipynb)
+4. [RMSprop](https://github.com/fzehracetin/optimization-techniques/blob/master/RMSprop.ipynb)
 
 ### Resources
 I put useful links below to learn Optimization Techniques.
