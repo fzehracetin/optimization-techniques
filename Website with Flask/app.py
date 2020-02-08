@@ -5,6 +5,9 @@ import numpy as np
 import sympy as sym
 import base64
 
+from PIL import Image
+import glob
+
 app = Flask(__name__)
 
 
@@ -97,15 +100,19 @@ def init(startx, endx, incx, starty, endy, incy):
     return X1, Y1, Z1, X_new
 
 
-def create_figure(X1, Y1, Z1, x_list, y_list, q, b, c):
+def create_figure(X1, Y1, Z1, x_list, y_list, q, b, c, index):
     X1, Y1 = np.meshgrid(X1, Y1)
     Z1 = f_mesh(X1, Y1, q, b, c)
+
+    x_list = np.delete(x_list, 0, axis=0)
+    y_list = np.delete(y_list, 0, axis=0)
 
     X, Y = zip(*x_list)
     Z = y_list
 
     ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 10))
     cs = plt.contour(X1, Y1, Z1)
+    plt.suptitle('Iteration number: {}'.format(index), fontsize=14, fontweight='bold')
     plt.clabel(cs, inline=1, fontsize=10)
     colors = ['b', 'g', 'm', 'c', 'orange']
     for j in range(1, len(X)):
@@ -116,25 +123,70 @@ def create_figure(X1, Y1, Z1, x_list, y_list, q, b, c):
     ax[1].set_xlabel('X')
     ax[1].set_ylabel('Y')
     ax[1].set_title('Minimizing function')
-    return plt
+
+    plt.savefig('static/Figures/' + str(index) + '.png')
+    plt.close('all')
+
+
+def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c):
+    X1, Y1 = np.meshgrid(X1, Y1)
+    Z1 = f_mesh(X1, Y1, q, b, c)
+
+    x_list = np.delete(x_list, 0, axis=0)
+    y_list = np.delete(y_list, 0, axis=0)
+
+    frames = []
+
+    for i in range(1, len(x_list)):
+        X, Y = zip(*x_list[:i])
+        Z = y_list[:i]
+
+        ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 10))
+        cs = plt.contour(X1, Y1, Z1)
+        plt.suptitle('Iteration number: {}'.format(i), fontsize=14, fontweight='bold')
+        plt.clabel(cs, inline=1, fontsize=10)
+        colors = ['b', 'g', 'm', 'c', 'orange']
+        for j in range(1, len(X)):
+            ax[1].annotate('', xy=(X[j], Y[j]), xytext=(X[j - 1], Y[j - 1]),
+                           arrowprops={'arrowstyle': '->', 'color': 'r', 'lw': 1},
+                           va='center', ha='center')
+        ax[1].scatter(X, Y, s=40, lw=0)
+        ax[1].set_xlabel('X')
+        ax[1].set_ylabel('Y')
+        ax[1].set_title('Minimizing function')
+        plt.savefig('img.png')
+        plt.close('all')
+        # new_frame = Image.open('img.png').save('img.jpg','JPEG')
+        new_frame = Image.open('img.png')
+
+        # new_frame.show()
+        frames.append(new_frame)
+
+    frames[0].save('static/b.gif', format='GIF',
+                   append_images=frames[1:],
+                   save_all=True,
+                   duration=300, loop=0)
 
 
 def grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps=0.05, precision=0.0001, max_iter=200, n=2):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
+    Y_new = np.zeros(1)
     dfr = np.zeros((1, 2))
     X_new[0][0] = x0
     X_new[0][1] = y0
     i = 0
-    Xs = np.zeros((max_iter, 2))
-    Ys = np.zeros(max_iter)
+    Xs = np.zeros((1, 2))
+    Ys = np.zeros(1)
     x, y = sym.symbols('x y')
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
 
     while np.all(abs(X_new - X_old)) > precision and max_iter > i:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
+        # create_figure(X1, Y1, Z1, Xs, Ys, q, b, c, i)
         X_old = X_new
         dfr[0][0] = df1.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
@@ -144,13 +196,9 @@ def grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps=0.05, precision=0.0001,
 
     print("Finished with {} step".format(i))
     if i < max_iter:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
-
-        for j in range(max_iter - 1, i, -1):
-            Xs = np.delete(Xs, j, axis=0)
-            Ys = np.delete(Ys, j, axis=0)
-
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
     return Xs, Ys
 
 
@@ -326,7 +374,8 @@ def gradient_descent():
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
+    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c)
+    return render_template(path)
 
 
 @app.route('/steepest_des', methods=['POST'])
@@ -473,6 +522,7 @@ def plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path):
     plt = create_figure(X1, Y1, Z1, x_list, y_list, q, b, c)
     output = io.BytesIO()
     plt.savefig(output, format='png')
+    plt.savefig('Figures/output.png')
     output.seek(0)
     output_png = base64.b64encode(output.getvalue())
     result = str(output_png)[2:-1]
