@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import io
 import numpy as np
 import sympy as sym
+import base64
 
 app = Flask(__name__)
 
@@ -82,12 +83,12 @@ def z_func(X_old, q, b, c, n=2):
     return sym.expr
 
 
-def init():
-    X1 = np.arange(-5, 5, 0.1)
-    Y1 = np.arange(-5, 5, 0.1)
+def init(startx, endx, incx, starty, endy, incy):
+    X1 = np.arange(startx, endx, incx)
+    Y1 = np.arange(starty, endy, incy)
     Z1 = np.zeros(len(X1))
 
-    X_new = np.zeros((100, 2))
+    X_new = np.zeros((len(X1), 2))
 
     for i in range(len(X1)):
         X_new[i][0] = X1[i]
@@ -118,18 +119,19 @@ def create_figure(X1, Y1, Z1, x_list, y_list, q, b, c):
     return plt
 
 
-def grad_descent(X, Y, q, b, c, eps=0.05, precision=0.0001, max_iter=200, n=2):
+def grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps=0.05, precision=0.0001, max_iter=200, n=2):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
     dfr = np.zeros((1, 2))
-    X_new[0][0] = 4.9
-    X_new[0][1] = 4.9
+    X_new[0][0] = x0
+    X_new[0][1] = y0
     i = 0
     Xs = np.zeros((max_iter, 2))
     Ys = np.zeros(max_iter)
     x, y = sym.symbols('x y')
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
+
     while np.all(abs(X_new - X_old)) > precision and max_iter > i:
         Xs[i] = X_new
         Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
@@ -152,12 +154,12 @@ def grad_descent(X, Y, q, b, c, eps=0.05, precision=0.0001, max_iter=200, n=2):
     return Xs, Ys
 
 
-def steepest(X, Y, q, b, c, precision=0.0001, max_iter=200, n=2):
+def steepest(X, Y, q, b, c, x0, y0, precision=0.0001, max_iter=200, n=2):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
     dfr = np.zeros((1, 2))
-    X_new[0][0] = 4.9
-    X_new[0][1] = 4.9
+    X_new[0][0] = x0
+    X_new[0][1] = y0
     i = 0
     Xs = np.zeros((max_iter, 2))
     Ys = np.zeros(max_iter)
@@ -184,12 +186,12 @@ def steepest(X, Y, q, b, c, precision=0.0001, max_iter=200, n=2):
     return Xs, Ys
 
 
-def gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200, n=2):
+def gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200, n=2):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
     dfr = np.zeros((1, 2))
-    X_new[0][0] = 4.9
-    X_new[0][1] = 4.9
+    X_new[0][0] = x0
+    X_new[0][1] = y0
     i = 0
     Xs = np.zeros((max_iter, 2))
     Ys = np.zeros(max_iter)
@@ -217,12 +219,12 @@ def gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, alpha=0.10, beta=0.9, precision
     return Xs, Ys
 
 
-def rmsprop (X_new, X1, Y1, Z1, q, b, c, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200, n=2):
+def rmsprop (X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200, n=2):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
     dfr = np.zeros((1, 2))
-    X_new[0][0] = 2.8
-    X_new[0][1] = 4.9
+    X_new[0][0] = x0
+    X_new[0][1] = y0
     i = 0
     Xs = np.zeros((max_iter, 2))
     Ys = np.zeros(max_iter)
@@ -250,13 +252,13 @@ def rmsprop (X_new, X1, Y1, Z1, q, b, c, alpha=0.10, beta=0.9, precision=0.0001,
     return Xs, Ys
 
 
-def adam(X_new, X1, Y1, Z1, q, b, c, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, precision=0.0001,
+def adam(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, precision=0.0001,
          max_iter=200, n=2):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
     dfr = np.zeros((1, 2))
-    X_new[0][0] = 2.8
-    X_new[0][1] = 4.9
+    X_new[0][0] = x0
+    X_new[0][1] = y0
     i = 0
     Xs = np.zeros((max_iter, 2))
     Ys = np.zeros(max_iter)
@@ -282,7 +284,6 @@ def adam(X_new, X1, Y1, Z1, q, b, c, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000
         X_new = X_new - alpha * V_corr / (np.sqrt(S_corr) + eps)
         alpha *= 0.99
 
-
     print("Finished with {} step".format(i))
     if i < max_iter:
         Xs[i] = X_new
@@ -296,15 +297,27 @@ def adam(X_new, X1, Y1, Z1, q, b, c, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000
 
 @app.route('/grad_des', methods=['POST'])
 def gradient_descent():
-    X1, Y1, Z1, X_new = init()
+    path = "grad_des.html"
 
     eps = float(request.form['eps'])
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
+
+    startx = float(request.form['startx'])
+    endx = float(request.form['endx'])
+    incx = float(request.form['incx'])
+    starty = float(request.form['starty'])
+    endy = float(request.form['endy'])
+    incy = float(request.form['incy'])
+    x0 = float(request.form['x0'])
+    y0 = float(request.form['y0'])
+
     q = [[request.form['q[0][0]'], request.form['q[0][1]']],
          [request.form['q[1][0]'], request.form['q[1][1]']]]
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
+
+    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -312,19 +325,32 @@ def gradient_descent():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = grad_descent(X_new, Z1, q, b, c, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c)
+    x_list, y_list = grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps, precision, max_iter)
+    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
 
 
 @app.route('/steepest_des', methods=['POST'])
 def steepest_descent():
-    X1, Y1, Z1, X_new = init()
+    path = "steepest_des.html"
+
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
+
+    startx = float(request.form['startx'])
+    endx = float(request.form['endx'])
+    incx = float(request.form['incx'])
+    starty = float(request.form['starty'])
+    endy = float(request.form['endy'])
+    incy = float(request.form['incy'])
+    x0 = float(request.form['x0'])
+    y0 = float(request.form['y0'])
+
     q = [[request.form['q[0][0]'], request.form['q[0][1]']],
          [request.form['q[1][0]'], request.form['q[1][1]']]]
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
+
+    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -332,21 +358,34 @@ def steepest_descent():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = steepest(X_new, Z1, q, b, c, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c)
+    x_list, y_list = steepest(X_new, Z1, q, b, c, x0, y0, precision, max_iter)
+    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
 
 
 @app.route('/gdm', methods=['POST'])
 def gd_with_m():
-    X1, Y1, Z1, X_new = init()
+    path = "gdm.html"
+
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
     alpha = float(request.form['alpha'])
     beta = float(request.form['beta'])
+
+    startx = float(request.form['startx'])
+    endx = float(request.form['endx'])
+    incx = float(request.form['incx'])
+    starty = float(request.form['starty'])
+    endy = float(request.form['endy'])
+    incy = float(request.form['incy'])
+    x0 = float(request.form['x0'])
+    y0 = float(request.form['y0'])
+
     q = [[request.form['q[0][0]'], request.form['q[0][1]']],
          [request.form['q[1][0]'], request.form['q[1][1]']]]
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
+
+    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -354,21 +393,34 @@ def gd_with_m():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, alpha, beta, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c)
+    x_list, y_list = gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha, beta, precision, max_iter)
+    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
 
 
 @app.route('/rmsprop', methods=['POST'])
 def rms_prop():
-    X1, Y1, Z1, X_new = init()
+    path = "rmsprop.html"
+
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
     alpha = float(request.form['alpha'])
     beta = float(request.form['beta'])
+
+    startx = float(request.form['startx'])
+    endx = float(request.form['endx'])
+    incx = float(request.form['incx'])
+    starty = float(request.form['starty'])
+    endy = float(request.form['endy'])
+    incy = float(request.form['incy'])
+    x0 = float(request.form['x0'])
+    y0 = float(request.form['y0'])
+
     q = [[request.form['q[0][0]'], request.form['q[0][1]']],
          [request.form['q[1][0]'], request.form['q[1][1]']]]
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
+
+    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -376,23 +428,36 @@ def rms_prop():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = rmsprop(X_new, X1, Y1, Z1, q, b, c, alpha, beta, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c)
+    x_list, y_list = rmsprop(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha, beta, precision, max_iter)
+    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
 
 
 @app.route('/adam', methods=['GET', 'POST'])
 def ADAM():
-    X1, Y1, Z1, X_new = init()
+    path = "adam.html"
+
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
     alpha = float(request.form['alpha'])
     beta1 = float(request.form['beta1'])
     beta2 = float(request.form['beta2'])
     eps = float(request.form['eps'])
+
+    startx = float(request.form['startx'])
+    endx = float(request.form['endx'])
+    incx = float(request.form['incx'])
+    starty = float(request.form['starty'])
+    endy = float(request.form['endy'])
+    incy = float(request.form['incy'])
+    x0 = float(request.form['x0'])
+    y0 = float(request.form['y0'])
+
     q = [[request.form['q[0][0]'], request.form['q[0][1]']],
          [request.form['q[1][0]'], request.form['q[1][1]']]]
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
+
+    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -400,21 +465,18 @@ def ADAM():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = adam(X_new, X1, Y1, Z1, q, b, c, alpha, beta1, beta2, eps, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c)
+    x_list, y_list = adam(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
+    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
 
 
-def plotter(X1, Y1, Z1, x_list, y_list, q, b, c):
+def plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path):
     plt = create_figure(X1, Y1, Z1, x_list, y_list, q, b, c)
     output = io.BytesIO()
     plt.savefig(output, format='png')
     output.seek(0)
-    return send_file(output, attachment_filename='plot.png', mimetype='image/png')
-
-        # render_template('grad_des.html', user_image=output)
-
-        #
-
+    output_png = base64.b64encode(output.getvalue())
+    result = str(output_png)[2:-1]
+    return render_template(path, user_image=result)
 
 if __name__ == "__main__":
     app.run(debug=True)
