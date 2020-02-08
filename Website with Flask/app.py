@@ -52,13 +52,13 @@ def f(X, q, b, c, n=2):
 
 
 def f2(X, Y, q, b, c):
-    Z = q[0][0]*X*X + q[0][1]*X*Y + q[1][0]*Y*X + q[1][1]*Y*Y + b[0]*X + b[1]*Y + int(c[0])
+    Z = q[0][0]*X*X + q[0][1]*X*Y + q[1][0]*Y*X + q[1][1]*Y*Y + b[0]*X + b[1]*Y + c[0]
     return Z
 
 
 def f_mesh(X, Y, q, b, c):
     Z = np.zeros(len(X))
-    Z = q[0][0]*X*X + q[0][1]*X*Y + q[1][0]*Y*X + q[1][1]*Y*Y + b[0]*X + b[1]*Y + c
+    Z = q[0][0]*X*X + q[0][1]*X*Y + q[1][0]*Y*X + q[1][1]*Y*Y + b[0]*X + b[1]*Y + c[0]
     return Z
 
 
@@ -118,7 +118,7 @@ def create_figure(X1, Y1, Z1, x_list, y_list, q, b, c):
     return plt
 
 
-def grad_descent(X, X1, Y1, Y, q, b, c, eps=0.05, precision=0.0001, max_iter=200, n=2):
+def grad_descent(X, Y, q, b, c, eps=0.05, precision=0.0001, max_iter=200, n=2):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
     dfr = np.zeros((1, 2))
@@ -143,7 +143,7 @@ def grad_descent(X, X1, Y1, Y, q, b, c, eps=0.05, precision=0.0001, max_iter=200
     print("Finished with {} step".format(i))
     if i < max_iter:
         Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], n, q, b, c)
+        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
 
         for j in range(max_iter - 1, i, -1):
             Xs = np.delete(Xs, j, axis=0)
@@ -380,7 +380,7 @@ def rms_prop():
     return plotter(X1, Y1, Z1, x_list, y_list, q, b, c)
 
 
-@app.route('/adam', methods=['POST'])
+@app.route('/adam', methods=['GET', 'POST'])
 def ADAM():
     X1, Y1, Z1, X_new = init()
     precision = float(request.form['precision'])
@@ -411,7 +411,9 @@ def plotter(X1, Y1, Z1, x_list, y_list, q, b, c):
     output.seek(0)
     return send_file(output, attachment_filename='plot.png', mimetype='image/png')
 
-    # render_template('grad_des.html', user_image=output)
+        # render_template('grad_des.html', user_image=output)
+
+        #
 
 
 if __name__ == "__main__":
