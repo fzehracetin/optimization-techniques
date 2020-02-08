@@ -5,37 +5,42 @@
 {% endblock %}
 
 {% block body %}
-<div class = "content" style = "text-align: center;">
-    <h1 >Gradient Descent with Momentum Algorithm</h1>
-    <form action="{{url_for('gd_with_m') }}" method="post">
+<div class = "content">
+    <img style = "position:absolute; TOP: 500px LEFT:900px;" src = "data:image/png;base64,{{ user_image }}" alt = "Gradient Descent with Momentum Plot" width="500">
+    <h1 style = "text-align: center;" >Gradient Descent with Momentum</h1>
+    <form action="{{url_for('gd_with_m') }}" method="post" style = "text-align: center;">
+
+        <b> Range of X values: </b><br />
+        <b> Start: </b> <input type="text" name="startx" size="12">
+        <b> End: </b> <input type="text" name="endx" size="12">
+        <b> Increment: </b> <input type="text" name="incx" size="12"> <br /><br />
+
+        <b> Range of Y values: </b><br />
+        <b> Start: </b> <input type="text" name="starty" size="12">
+        <b> End: </b> <input type="text" name="endy" size="12">
+        <b> Increment: </b> <input type="text" name="incy" size="12"> <br /><br />
+
         <b> Function: </b><br />
-        <b> q[0][0]: </b>
-        <input type="text" name="q[0][0]" size="12">
-        <b> q[0][1]: </b>
-        <input type="text" name="q[0][1]" size="12"><br /><br />
-        <b> q[1][0]: </b>
-        <input type="text" name="q[1][0]" size="12">
-        <b> q[1][1]: </b>
-        <input type="text" name="q[1][1]" size="12"><br /><br />
-        <b> b[0]: </b>
-        <input type="text" name="b[0]" size="12">
-        <b> b[1]: </b>
-        <input type="text" name="b[1]" size="12"><br /><br />
-        <b> c: </b>
-        <input type="text" name="c" size="12"><br /><br />
-        <b> Alpha: </b>
-        <input type="text" name="alpha" size="12"><br /><br />
-        <b> Beta: </b>
-        <input type="text" name="beta" size="12"><br /><br />
-        <b> Precision: </b>
-        <input type="text" name="precision" size="12"><br /><br />
-        <b> Maximum Iteration Number: </b><br />
-        <input type="text" name="max_iter" size="12"><br /><br />
+        <b> q[0][0]: </b> <input type="text" name="q[0][0]" size="12">
+        <b> q[0][1]: </b> <input type="text" name="q[0][1]" size="12"><br /><br />
+        <b> q[1][0]: </b> <input type="text" name="q[1][0]" size="12">
+        <b> q[1][1]: </b> <input type="text" name="q[1][1]" size="12"><br /><br />
+        <b> b[0]: </b> <input type="text" name="b[0]" size="12">
+        <b> b[1]: </b> <input type="text" name="b[1]" size="12"><br /><br />
+        <b> c: </b> <input type="text" name="c" size="12"><br /><br />
+
+        <b> Starting Point: </b><br />
+        <b> x0: </b> <input type="text" name="x0" size="12">
+        <b> y0: </b> <input type="text" name="y0" size="12"> <br /><br />
+
+        <b> Alpha: </b> <input type="text" name="alpha" size="12"><br /><br />
+        <b> Beta: </b> <input type="text" name="beta" size="12"><br /><br />
+        <b> Precision: </b> <input type="text" name="precision" size="12"><br /><br />
+        <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12"><br /><br />
+
         <input type="submit" name="submit" value="Submit"><br/><br/>
 
     </form>
-
-    <img src = "{{ user_image }}" alt = "Gradient Descent with Momentum Plot" width="500" height="600">
 
 </div>
 
