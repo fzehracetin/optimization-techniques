@@ -9,7 +9,7 @@ This repository will comprise primary optimization algorithms implementations in
 5. [Adam Optimization Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/Adam.ipynb)
 
 ## Website
-I make a simple website with [Flask](https://github.com/fzehracetin/optimization-techniques/tree/master/Website%20with%20Flask) for using this algorithms much more simpler. These are screenshots for that site.
+I made a [simple website](https://github.com/fzehracetin/optimization-techniques/tree/master/Website%20with%20Flask) with Flask for using this algorithms much more simpler. These are screenshots for that site.
 
 ![Screenshot from Site](Screenshots/opt.png)
 
