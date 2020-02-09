@@ -1,12 +1,9 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import io
 import numpy as np
 import sympy as sym
-import base64
-from io import StringIO
-from PIL import Image
-import glob
 import imageio
 
 app = Flask(__name__)
@@ -42,54 +39,54 @@ def adam_alg():
     return render_template('adam.html')
 
 
-def f(X, q, b, c, n=2):
-    Z = np.zeros(len(X))
-    for i in range(len(X)):
+def f(x, q, b, c, n=2):
+    z = np.zeros(len(x))
+    for i in range(len(x)):
         for j in range(int(n)):
             for k in range(int(n)):
-                Z[i] += q[j][k] * X[i][j] * X[i][k]
+                z[i] += q[j][k] * x[i][j] * x[i][k]
 
         for j in range(int(n)):
-            Z[i] += b[j] * X[i][j]
+            z[i] += b[j] * x[i][j]
 
-        Z[i] += c
-    return Z
-
-
-def f2(X, Y, q, b, c):
-    Z = q[0][0]*X*X + q[0][1]*X*Y + q[1][0]*Y*X + q[1][1]*Y*Y + b[0]*X + b[1]*Y + c[0]
-    return Z
+        z[i] += c
+    return z
 
 
-def f_mesh(X, Y, q, b, c):
-    Z = np.zeros(len(X))
-    Z = q[0][0]*X*X + q[0][1]*X*Y + q[1][0]*Y*X + q[1][1]*Y*Y + b[0]*X + b[1]*Y + c[0]
-    return Z
+def f2(x, y, q, b, c):
+    z = q[0][0] * x * x + q[0][1] * x * y + q[1][0] * y * x + q[1][1] * y * y + b[0] * x + b[1] * y + c[0]
+    return z
 
 
-def z_func(X_old, q, b, c, n=2):
+def f_mesh(x, y, q, b, c):
+    z = np.zeros(len(x))
+    z = q[0][0] * x * x + q[0][1] * x * y + q[1][0] * y * x + q[1][1] * y * y + b[0] * x + b[1] * y + c[0]
+    return z
+
+
+def z_func(x_old, q, b, c):
     x, y, t = sym.symbols('x y t')
 
-    X = sym.Matrix([[x, y]])
+    x1 = sym.Matrix([[x, y]])
 
-    T = sym.Matrix([[t]])
+    t1 = sym.Matrix([[t]])
 
     df = sym.Matrix([[sym.diff(f2(x, y, q, b, c), x),
                       sym.diff(f2(x, y, q, b, c), y)]])
-    z = X - t * df
+    z = x1 - t1 * df
 
     z = f2(z[0], z[1], q, b, c)
     z_diff = sym.diff(z, t)
     eqn = sym.Eq(z_diff)
-    sol = sym.solve((eqn), (t))
+    sol = sym.solve(eqn, t)
     sym.expr = sol[0]
-    sym.expr = sym.expr.subs([(x, X_old[0][0]), (y, X_old[0][1])])
+    sym.expr = sym.expr.subs([(x, x_old[0][0]), (y, x_old[0][1])])
     return sym.expr
 
 
-def init(startx, endx, incx, starty, endy, incy):
-    X1 = np.arange(startx, endx, incx)
-    Y1 = np.arange(starty, endy, incy)
+def init(start_x, end_x, inc_x, start_y, end_y, inc_y):
+    X1 = np.arange(start_x, end_x, inc_x)
+    Y1 = np.arange(start_y, end_y, inc_y)
     Z1 = np.zeros(len(X1))
 
     X_new = np.zeros((len(X1), 2))
@@ -101,35 +98,7 @@ def init(startx, endx, incx, starty, endy, incy):
     return X1, Y1, Z1, X_new
 
 
-def create_figure(X1, Y1, Z1, x_list, y_list, q, b, c, index):
-    X1, Y1 = np.meshgrid(X1, Y1)
-    Z1 = f_mesh(X1, Y1, q, b, c)
-
-    x_list = np.delete(x_list, 0, axis=0)
-    y_list = np.delete(y_list, 0, axis=0)
-
-    X, Y = zip(*x_list)
-    Z = y_list
-
-    ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 10))
-    cs = plt.contour(X1, Y1, Z1)
-    plt.suptitle('Iteration number: {}'.format(index), fontsize=14, fontweight='bold')
-    plt.clabel(cs, inline=1, fontsize=10)
-    colors = ['b', 'g', 'm', 'c', 'orange']
-    for j in range(1, len(X)):
-        ax[1].annotate('', xy=(X[j], Y[j]), xytext=(X[j - 1], Y[j - 1]),
-                       arrowprops={'arrowstyle': '->', 'color': 'r', 'lw': 1},
-                       va='center', ha='center')
-    ax[1].scatter(X, Y, s=40, lw=0)
-    ax[1].set_xlabel('X')
-    ax[1].set_ylabel('Y')
-    ax[1].set_title('Minimizing function')
-
-    plt.savefig('static/Figures/' + str(index) + '.png')
-    plt.close('all')
-
-
-def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c):
+def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif):
     X1, Y1 = np.meshgrid(X1, Y1)
     Z1 = f_mesh(X1, Y1, q, b, c)
 
@@ -157,29 +126,14 @@ def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c):
         ax[1].set_title('Minimizing function')
         plt.savefig('img.png')
         plt.close('all')
-        # new_frame = Image.open('img.png').save('img.jpg','JPEG')
-        '''new_frame = Image.open('img.png')
-
-                new_frame.show()
-                frames.append(new_frame)'''
 
         new_frame = imageio.imread('img.png')
         frames.append(new_frame)
 
-    imageio.mimsave('static/b.gif', frames)
-
-    '''frames[0].save('static/b.gif', format='GIF',
-                   append_images=frames[1:],
-                   save_all=True,
-                   duration=300, loop=0)'''
-
-    '''gif = Image.open('static/b.gif')
-    gif.seek(0)
-    gif_g = base64.b64encode(gif)
-    return str(gif_g)[2:-1]'''
+    imageio.mimsave('static/' + gif, frames)
 
 
-def grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps=0.05, precision=0.0001, max_iter=200, n=2):
+def grad_descent(q, b, c, x0, y0, eps=0.05, precision=0.0001, max_iter=200):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
     Y_new = np.zeros(1)
@@ -197,7 +151,6 @@ def grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps=0.05, precision=0.0001,
         Xs = np.append(Xs, X_new, axis=0)
         Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
         Ys = np.append(Ys, Y_new, axis=0)
-        # create_figure(X1, Y1, Z1, Xs, Ys, q, b, c, i)
         X_old = X_new
         dfr[0][0] = df1.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
@@ -213,22 +166,24 @@ def grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps=0.05, precision=0.0001,
     return Xs, Ys
 
 
-def steepest(X, Y, q, b, c, x0, y0, precision=0.0001, max_iter=200, n=2):
+def steepest(q, b, c, x0, y0, precision=0.0001, max_iter=200):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
+    Y_new = np.zeros(1)
     dfr = np.zeros((1, 2))
     X_new[0][0] = x0
     X_new[0][1] = y0
     i = 0
-    Xs = np.zeros((max_iter, 2))
-    Ys = np.zeros(max_iter)
+    Xs = np.zeros((1, 2))
+    Ys = np.zeros(1)
     x, y = sym.symbols('x y')
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
 
     while np.all(abs(X_new - X_old)) > precision and max_iter > i:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
         X_old = X_new
         dfr[0][0] = df1.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
@@ -237,30 +192,30 @@ def steepest(X, Y, q, b, c, x0, y0, precision=0.0001, max_iter=200, n=2):
         i += 1
     print("Finished with {} step".format(i))
     if i < max_iter:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
-        for j in range(max_iter - 1, i, -1):
-            Xs = np.delete(Xs, j, axis=0)
-            Ys = np.delete(Ys, j, axis=0)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
     return Xs, Ys
 
 
-def gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200, n=2):
+def gd_with_momentum(q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
+    Y_new = np.zeros(1)
     dfr = np.zeros((1, 2))
     X_new[0][0] = x0
     X_new[0][1] = y0
     i = 0
-    Xs = np.zeros((max_iter, 2))
-    Ys = np.zeros(max_iter)
+    Xs = np.zeros((1, 2))
+    Ys = np.zeros(1)
     V = np.zeros((max_iter + 1, 2))
     x, y = sym.symbols('x y')
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
     while np.all(abs(X_new - X_old)) > precision and max_iter > i:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
         X_old = X_new
         dfr[0][0] = df1.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
@@ -270,30 +225,30 @@ def gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.10, beta=0.9, p
         alpha *= 0.99
     print("Finished with {} step".format(i))
     if i < max_iter:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
-        for j in range(max_iter - 1, i, -1):
-            Xs = np.delete(Xs, j, axis=0)
-            Ys = np.delete(Ys, j, axis=0)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
     return Xs, Ys
 
 
-def rmsprop (X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200, n=2):
+def rmsprop (q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=200):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
+    Y_new = np.zeros(1)
     dfr = np.zeros((1, 2))
     X_new[0][0] = x0
     X_new[0][1] = y0
     i = 0
-    Xs = np.zeros((max_iter, 2))
-    Ys = np.zeros(max_iter)
+    Xs = np.zeros((1, 2))
+    Ys = np.zeros(1)
     S = np.zeros((max_iter + 1, 2))
     x, y = sym.symbols('x y')
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
     while np.all(abs(X_new - X_old)) > precision and max_iter > i:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
         X_old = X_new
         dfr[0][0] = df1.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
@@ -303,24 +258,22 @@ def rmsprop (X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.10, beta=0.9, precision
         alpha *= 0.99
     print("Finished with {} step".format(i))
     if i < max_iter:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
-        for j in range(max_iter - 1, i, -1):
-            Xs = np.delete(Xs, j, axis=0)
-            Ys = np.delete(Ys, j, axis=0)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
     return Xs, Ys
 
 
-def adam(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, precision=0.0001,
-         max_iter=200, n=2):
+def adam(q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, precision=0.0001, max_iter=200):
     X_old = np.zeros((1, 2))
     X_new = np.zeros((1, 2))
+    Y_new = np.zeros(1)
     dfr = np.zeros((1, 2))
     X_new[0][0] = x0
     X_new[0][1] = y0
     i = 0
-    Xs = np.zeros((max_iter, 2))
-    Ys = np.zeros(max_iter)
+    Xs = np.zeros((1, 2))
+    Ys = np.zeros(1)
     V = np.zeros((max_iter + 1, 2))
     S = np.zeros((max_iter + 1, 2))
     V_corr = np.zeros((1, 2))
@@ -330,8 +283,9 @@ def adam(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, e
     df2 = sym.diff(f2(x, y, q, b, c), y)
 
     while np.all(abs(X_new - X_old)) > precision and max_iter > i:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
         X_old = X_new
         dfr[0][0] = df1.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
@@ -345,18 +299,16 @@ def adam(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, e
 
     print("Finished with {} step".format(i))
     if i < max_iter:
-        Xs[i] = X_new
-        Ys[i] = f2(X_new[0][0], X_new[0][1], q, b, c)
-
-        for j in range(max_iter - 1, i, -1):
-            Xs = np.delete(Xs, j, axis=0)
-            Ys = np.delete(Ys, j, axis=0)
+        Xs = np.append(Xs, X_new, axis=0)
+        Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
+        Ys = np.append(Ys, Y_new, axis=0)
     return Xs, Ys
 
 
 @app.route('/grad_des', methods=['POST'])
 def gradient_descent():
     path = "grad_des.html"
+    gif = "gradient_descent.gif"
 
     eps = float(request.form['eps'])
     precision = float(request.form['precision'])
@@ -384,14 +336,15 @@ def gradient_descent():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps, precision, max_iter)
-    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c)
+    x_list, y_list = grad_descent(q, b, c, x0, y0, eps, precision, max_iter)
+    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
     return render_template(path)
 
 
 @app.route('/steepest_des', methods=['POST'])
 def steepest_descent():
     path = "steepest_des.html"
+    gif = "steepest_descent.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
@@ -418,13 +371,15 @@ def steepest_descent():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = steepest(X_new, Z1, q, b, c, x0, y0, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
+    x_list, y_list = steepest(q, b, c, x0, y0, precision, max_iter)
+    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
+    return render_template(path)
 
 
 @app.route('/gdm', methods=['POST'])
 def gd_with_m():
     path = "gdm.html"
+    gif = "gdm.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
@@ -453,13 +408,15 @@ def gd_with_m():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = gd_with_momentum(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha, beta, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
+    x_list, y_list = gd_with_momentum(q, b, c, x0, y0, alpha, beta, precision, max_iter)
+    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
+    return render_template(path)
 
 
 @app.route('/rmsprop', methods=['POST'])
 def rms_prop():
     path = "rmsprop.html"
+    gif = "rmsprop.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
@@ -488,13 +445,15 @@ def rms_prop():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = rmsprop(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha, beta, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
+    x_list, y_list = rmsprop(q, b, c, x0, y0, alpha, beta, precision, max_iter)
+    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
+    return render_template(path)
 
 
 @app.route('/adam', methods=['GET', 'POST'])
 def ADAM():
     path = "adam.html"
+    gif = "adam.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
@@ -525,19 +484,10 @@ def ADAM():
     c = list(map(float, c))
 
     Z1 = f(X_new, q, b, c)
-    x_list, y_list = adam(X_new, X1, Y1, Z1, q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
-    return plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path)
+    x_list, y_list = adam(q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
+    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
+    return render_template(path)
 
-
-def plotter(X1, Y1, Z1, x_list, y_list, q, b, c, path):
-    plt = create_figure(X1, Y1, Z1, x_list, y_list, q, b, c)
-    output = io.BytesIO()
-    plt.savefig(output, format='png')
-    plt.savefig('Figures/output.png')
-    output.seek(0)
-    output_png = base64.b64encode(output.getvalue())
-    result = str(output_png)[2:-1]
-    return render_template(path, user_image=result)
 
 if __name__ == "__main__":
     app.run(debug=True)
