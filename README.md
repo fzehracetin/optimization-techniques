@@ -8,7 +8,10 @@ This repository will comprise primary optimization algorithms implementations in
 4. [RMSprop Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/RMSprop.ipynb)
 5. [Adam Optimization Algorithm](https://github.com/fzehracetin/optimization-techniques/blob/master/Adam.ipynb)
 
-## Framework
+## Website
+I make a simple website with [Flask](https://github.com/fzehracetin/optimization-techniques/tree/master/Website%20with%20Flask) for using this algorithms much more simpler. These are screenshots for that site.
+![Screenshot from Site](Screenshots/opt.png)
+![Screenshot from Game](Screenshots/gd.png)
 
 
 ### Resources
