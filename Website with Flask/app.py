@@ -4,9 +4,10 @@ import io
 import numpy as np
 import sympy as sym
 import base64
-
+from io import StringIO
 from PIL import Image
 import glob
+import imageio
 
 app = Flask(__name__)
 
@@ -157,15 +158,25 @@ def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c):
         plt.savefig('img.png')
         plt.close('all')
         # new_frame = Image.open('img.png').save('img.jpg','JPEG')
-        new_frame = Image.open('img.png')
+        '''new_frame = Image.open('img.png')
 
-        # new_frame.show()
+                new_frame.show()
+                frames.append(new_frame)'''
+
+        new_frame = imageio.imread('img.png')
         frames.append(new_frame)
 
-    frames[0].save('static/b.gif', format='GIF',
+    imageio.mimsave('static/b.gif', frames)
+
+    '''frames[0].save('static/b.gif', format='GIF',
                    append_images=frames[1:],
                    save_all=True,
-                   duration=300, loop=0)
+                   duration=300, loop=0)'''
+
+    '''gif = Image.open('static/b.gif')
+    gif.seek(0)
+    gif_g = base64.b64encode(gif)
+    return str(gif_g)[2:-1]'''
 
 
 def grad_descent(X_new, X1, Y1, Z1, q, b, c, x0, y0, eps=0.05, precision=0.0001, max_iter=200, n=2):
