@@ -1,21 +1,41 @@
+
 {% extends 'base.html' %}
 
 {% block head %}
+<head>
+    <title>Optimization Algorithms</title>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 align="center">
+    <font size="20" style="background-color: #FBFCFC" > Optimization Algorithms </font>
+    </h1>
+</head>
 
 {% endblock %}
 
 {% block body %}
-<div class = "content">
-    <img style = "position:absolute; TOP: 500px LEFT:900px;" src = "{{url_for('static', filename='hey.jpg')}}" alt = "Gradient Descent Plot" width="500">
-    <h1 style="text-align: center">Optimization Algorithms</h1>
-    <ul style = "margin-left: 40em">
-        <li><a href = "/grad_des" > Gradient Descent </a></li>
-        <li><a href = "/steepest_des" > Steepest Descent </a></li>
-        <li><a href = "/gdm" > Gradient Descent with Momentum </a></li>
-        <li><a href = "/rmsprop" > RMSprop </a></li>
-        <li><a href = "/adam" > Adam </a></li>
-    </ul>
-
+<body style="background-image: url('static/math2.jpeg')">
+<div align="center" style="background-color: #FBFCFC">
+    <p size="2" style="font-weight: normal"> <i> This is a simple tool for trying Optimization Algorithms with 3 dimension functions. </i> </p>
 </div>
-
+<h2 align="center">
+<div class = "content" style="background-image: url('static/fon.jpg')">
+    <a href = "/grad_des" style="color:black"> <font size="6"> Gradient Descent </font> </a><br/>
+    <a href = "/steepest_des" style="color:black"><font size="6">  Steepest Descent </font>  </a><br/>
+    <a href = "/gdm" style="color:black"> <font size="6">  Gradient Descent with Momentum </font> </a><br/>
+    <a href = "/rmsprop" style="color:black"> <font size="6">  RMSprop </font> </a><br/>
+    <a href = "/adam" style="color:black"> <font size="6">  Adam </font> </a><br/>
+</div>
+</h2>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+ <footer style = "text-align: center; background-color: #191A19 ">
+        <br/>
+        <p style="color:white">Fatma Zehra Çetin</p>
+        <p style="color:white">© 2020 Nova Research Lab</p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "https://medium.com/novaresearchlab" style="color:white"> Medium </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "https://twitter.com/novaresearchlab" style="color:white"> Twitter </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "/https://www.facebook.com/novaresearchlab" style="color:white">  Facebook </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <br/><br/><br/>
+ </footer>
+</body>
 {% endblock %}

@@ -1,48 +1,72 @@
 {% extends 'base.html' %}
 {% block head %}
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
+<head>
+    <title>Gradient Descent</title>
+    <div style="background-color: #FBFCFC">
+    <a href = "/" style="color:black"> <font size="6" > <b> Optimization Algorithms </b></font> </a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/grad_des" style="color:black"> <font size="5"> Gradient Descent </font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/steepest_des" style="color:black"> <font size="4">  Steepest Descent </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/gdm" style="color:black"> <font size="4">  Gradient Descent with Momentum </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/rmsprop" style="color:black"> <font size="4">  RMSprop </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/adam" style="color:black"> <font size="4">  Adam </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+    <h1 align="center" size="13">
+    <font  style="background-color: #FBFCFC" > Gradient Descent Algorithm </font>
+    </h1>
+
+</head>
 {% endblock %}
 
 {% block body %}
-<div class = "content">
-    <img style = "position:absolute; TOP: 500px LEFT:900px;" src = "{{url_for('static', filename='b.gif')}}" alt = "Gradient Descent Plot" width="500">
-    <h1 style = "text-align: center;">Gradient Descent Algorithm </h1>
-    <form action="{{url_for('gradient_descent') }}" method="post" style = "text-align: center;">
+<body style="background-image: url('static/math2.jpeg')">
 
+<div class = "content" style="background-image: url('static/fon.jpg')">
+    <img style ="position:absolute; TOP: 500px LEFT:900px;" src = "{{url_for('static', filename='gradient_descent.gif')}}" alt = "Gradient Descent Plot" width="500">
+    <form action="{{url_for('gradient_descent') }}" method="post" style = "text-align: center;">
+        <br/>
         <b> Range of X values: </b><br />
-        <b> Start: </b> <input type="text" name="startx" size="12">
-        <b> End: </b> <input type="text" name="endx" size="12">
-        <b> Increment: </b> <input type="text" name="incx" size="12"> <br /><br />
+        <input type="text" name="startx" size="12" placeholder="Start">
+        <input type="text" name="endx" size="12" placeholder="End">
+        <input type="text" name="incx" size="12" placeholder="Increment"> <br /><br />
 
         <b> Range of Y values: </b><br />
-        <b> Start: </b> <input type="text" name="starty" size="12">
-        <b> End: </b> <input type="text" name="endy" size="12">
-        <b> Increment: </b> <input type="text" name="incy" size="12"> <br /><br />
+        <input type="text" name="starty" size="12" placeholder="Start">
+        <input type="text" name="endy" size="12" placeholder="End">
+        <input type="text" name="incy" size="12" placeholder="Increment"> <br /><br />
 
         <b> Function: </b><br />
-        <b> q[0][0]: </b> <input type="text" name="q[0][0]" size="12">
-        <b> q[0][1]: </b> <input type="text" name="q[0][1]" size="12"><br /><br />
-        <b> q[1][0]: </b> <input type="text" name="q[1][0]" size="12">
-        <b> q[1][1]: </b> <input type="text" name="q[1][1]" size="12"><br /><br />
-        <b> b[0]: </b> <input type="text" name="b[0]" size="12">
-        <b> b[1]: </b> <input type="text" name="b[1]" size="12"><br /><br />
-        <b> c: </b> <input type="text" name="c" size="12"><br /><br />
+        <input type="text" name="q[0][0]" size="12" placeholder="q[0][0]">
+        <input type="text" name="q[0][1]" size="12" placeholder="q[0][1]"><br /><br />
+        <input type="text" name="q[1][0]" size="12" placeholder="q[1][0]">
+        <input type="text" name="q[1][1]" size="12" placeholder="q[1][1]"><br /><br />
+        <input type="text" name="b[0]" size="12" placeholder="b[0]">
+        <input type="text" name="b[1]" size="12" placeholder="b[1]"><br /><br />
+        <input type="text" name="c" size="12" placeholder="c"><br /><br />
 
         <b> Starting Point: </b><br />
-        <b> x0: </b> <input type="text" name="x0" size="12">
-        <b> y0: </b> <input type="text" name="y0" size="12"> <br /><br />
+        <input type="text" name="x0" size="12" placeholder="x0">
+        <input type="text" name="y0" size="12" placeholder="y0"> <br /><br />
 
-        <b> Eps: </b> <input type="text" name="eps" size="12"><br /><br />
-        <b> Precision: </b> <input type="text" name="precision" size="12"><br /><br />
+        <b> Parameters: </b><br />
+        <input type="text" name="eps" size="12" placeholder="Eps">
+        <input type="text" name="precision" size="12" placeholder="Precision"><br /><br />
         <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" id="max_iter" size="12"><br /><br />
 
-        <input type="submit" name="submit" value="Submit"><br/><br/>
+        <input type="submit" name="submit" value="Plot" ><br/><br/>
 
     </form>
-
-
 </div>
-
+<br/><br/><br/><br/><br/>
+ <footer style = "text-align: center; background-color: #191A19 ">
+        <br/>
+        <p style="color:white">Fatma Zehra Çetin</p>
+        <p style="color:white">© 2020 Nova Research Lab</p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "https://medium.com/novaresearchlab" style="color:white"> Medium </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "https://twitter.com/novaresearchlab" style="color:white"> Twitter </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "/https://www.facebook.com/novaresearchlab" style="color:white">  Facebook </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <br/><br/><br/>
+ </footer>
+</body>
 {% endblock %}
