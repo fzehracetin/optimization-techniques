@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sym
 import imageio
+import time
 
 app = Flask(__name__)
 
@@ -16,27 +17,27 @@ def index():
 
 @app.route('/grad_des')
 def grad_des():
-    return render_template('grad_des.html')
+    return render_template('grad_des.html', string_variable="gradient_descent")
 
 
 @app.route('/steepest_des')
 def steepest_des():
-    return render_template('steepest_des.html')
+    return render_template('steepest_des.html', string_variable="steepest_descent")
 
 
 @app.route('/gdm')
 def gdm():
-    return render_template('gdm.html')
+    return render_template('gdm.html', string_variable="gdm")
 
 
 @app.route('/rmsprop')
 def RMSprop():
-    return render_template('rmsprop.html')
+    return render_template('rmsprop.html', string_variable="rmsprop")
 
 
 @app.route('/adam')
 def adam_alg():
-    return render_template('adam.html')
+    return render_template('adam.html', string_variable="adam")
 
 
 def f(x, q, b, c, n=2):
@@ -84,9 +85,9 @@ def z_func(x_old, q, b, c):
     return sym.expr
 
 
-def init(start_x, end_x, inc_x, start_y, end_y, inc_y):
-    X1 = np.arange(start_x, end_x, inc_x)
-    Y1 = np.arange(start_y, end_y, inc_y)
+def init(start_x, end_x, start_y, end_y):
+    X1 = np.arange(start_x, end_x, 0.1)
+    Y1 = np.arange(start_y, end_y, 0.1)
     Z1 = np.zeros(len(X1))
 
     X_new = np.zeros((len(X1), 2))
@@ -98,7 +99,7 @@ def init(start_x, end_x, inc_x, start_y, end_y, inc_y):
     return X1, Y1, Z1, X_new
 
 
-def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif):
+def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0):
     X1, Y1 = np.meshgrid(X1, Y1)
     Z1 = f_mesh(X1, Y1, q, b, c)
 
@@ -111,9 +112,13 @@ def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif):
         X, Y = zip(*x_list[:i])
         Z = y_list[:i]
 
+        xc = x_list[i][0]
+        yc = x_list[i][1]
+
         ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 10))
         cs = plt.contour(X1, Y1, Z1)
-        plt.suptitle('Iteration number: {}'.format(i), fontsize=14, fontweight='bold')
+        plt.suptitle('Starting point: ({}, {})      Iteration number: {}        Current Point: ({}, {})'.format(x0, y0,
+                    i, round(xc, 2), round(yc, 2)), fontsize=14, fontweight='bold')
         plt.clabel(cs, inline=1, fontsize=10)
         colors = ['b', 'g', 'm', 'c', 'orange']
         for j in range(1, len(X)):
@@ -130,7 +135,10 @@ def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif):
         new_frame = imageio.imread('img.png')
         frames.append(new_frame)
 
-    imageio.mimsave('static/' + gif, frames)
+    name = str(time.time())
+    name = name.replace('.', '')
+    imageio.mimsave('static/' + name + ".gif", frames)
+    return name
 
 
 def grad_descent(q, b, c, x0, y0, eps=0.05, precision=0.0001, max_iter=200):
@@ -254,6 +262,7 @@ def rmsprop (q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=2
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         i += 1
         S[i] = beta * S[i - 1] + (1 - beta) * np.power(dfr, 2)
+
         X_new = X_new - alpha * dfr / np.sqrt(S[i])
         alpha *= 0.99
     print("Finished with {} step".format(i))
@@ -291,7 +300,7 @@ def adam(q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, pre
         dfr[0][1] = df2.evalf(subs={x: X_old[0][0], y: X_old[0][1]})
         i += 1
         V[i] = beta1 * V[i - 1] + (1 - beta1) * dfr  # momentum
-        S[i] = beta2 * S[i - 1] + (1 - beta2) * np.power(dfr, 2)  # rmsprop
+        S[i] = beta2 * S[i - 1] + (1 - beta2) * np.power(dfr, 2)  # rms_prop
         V_corr = V[i] / (1 - np.power(beta1, i))
         S_corr = S[i] / (1 - np.power(beta2, i))
         X_new = X_new - alpha * V_corr / (np.sqrt(S_corr) + eps)
@@ -308,7 +317,6 @@ def adam(q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, pre
 @app.route('/grad_des', methods=['POST'])
 def gradient_descent():
     path = "grad_des.html"
-    gif = "gradient_descent.gif"
 
     eps = float(request.form['eps'])
     precision = float(request.form['precision'])
@@ -316,10 +324,8 @@ def gradient_descent():
 
     startx = float(request.form['startx'])
     endx = float(request.form['endx'])
-    incx = float(request.form['incx'])
     starty = float(request.form['starty'])
     endy = float(request.form['endy'])
-    incy = float(request.form['incy'])
     x0 = float(request.form['x0'])
     y0 = float(request.form['y0'])
 
@@ -328,7 +334,7 @@ def gradient_descent():
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
+    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -337,24 +343,21 @@ def gradient_descent():
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = grad_descent(q, b, c, x0, y0, eps, precision, max_iter)
-    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
-    return render_template(path)
+    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+    return render_template(path, string_variable=name)
 
 
 @app.route('/steepest_des', methods=['POST'])
 def steepest_descent():
     path = "steepest_des.html"
-    gif = "steepest_descent.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
 
     startx = float(request.form['startx'])
     endx = float(request.form['endx'])
-    incx = float(request.form['incx'])
     starty = float(request.form['starty'])
     endy = float(request.form['endy'])
-    incy = float(request.form['incy'])
     x0 = float(request.form['x0'])
     y0 = float(request.form['y0'])
 
@@ -363,7 +366,7 @@ def steepest_descent():
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
+    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -372,14 +375,13 @@ def steepest_descent():
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = steepest(q, b, c, x0, y0, precision, max_iter)
-    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
-    return render_template(path)
+    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+    return render_template(path, string_variable=name)
 
 
 @app.route('/gdm', methods=['POST'])
 def gd_with_m():
     path = "gdm.html"
-    gif = "gdm.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
@@ -388,10 +390,8 @@ def gd_with_m():
 
     startx = float(request.form['startx'])
     endx = float(request.form['endx'])
-    incx = float(request.form['incx'])
     starty = float(request.form['starty'])
     endy = float(request.form['endy'])
-    incy = float(request.form['incy'])
     x0 = float(request.form['x0'])
     y0 = float(request.form['y0'])
 
@@ -400,7 +400,7 @@ def gd_with_m():
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
+    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -409,14 +409,13 @@ def gd_with_m():
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = gd_with_momentum(q, b, c, x0, y0, alpha, beta, precision, max_iter)
-    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
-    return render_template(path)
+    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+    return render_template(path, string_variable=name)
 
 
 @app.route('/rmsprop', methods=['POST'])
 def rms_prop():
     path = "rmsprop.html"
-    gif = "rmsprop.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
@@ -425,10 +424,8 @@ def rms_prop():
 
     startx = float(request.form['startx'])
     endx = float(request.form['endx'])
-    incx = float(request.form['incx'])
     starty = float(request.form['starty'])
     endy = float(request.form['endy'])
-    incy = float(request.form['incy'])
     x0 = float(request.form['x0'])
     y0 = float(request.form['y0'])
 
@@ -437,7 +434,7 @@ def rms_prop():
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
+    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -446,14 +443,13 @@ def rms_prop():
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = rmsprop(q, b, c, x0, y0, alpha, beta, precision, max_iter)
-    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
-    return render_template(path)
+    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+    return render_template(path, string_variable=name)
 
 
 @app.route('/adam', methods=['GET', 'POST'])
 def ADAM():
     path = "adam.html"
-    gif = "adam.gif"
 
     precision = float(request.form['precision'])
     max_iter = int(request.form['max_iter'])
@@ -464,10 +460,8 @@ def ADAM():
 
     startx = float(request.form['startx'])
     endx = float(request.form['endx'])
-    incx = float(request.form['incx'])
     starty = float(request.form['starty'])
     endy = float(request.form['endy'])
-    incy = float(request.form['incy'])
     x0 = float(request.form['x0'])
     y0 = float(request.form['y0'])
 
@@ -476,7 +470,7 @@ def ADAM():
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, incx, starty, endy, incy)
+    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
@@ -485,8 +479,8 @@ def ADAM():
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = adam(q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
-    make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, gif)
-    return render_template(path)
+    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+    return render_template(path, string_variable=name)
 
 
 if __name__ == "__main__":
