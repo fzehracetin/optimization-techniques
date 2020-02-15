@@ -4,61 +4,101 @@
 <head>
     <title>Gradient Descent with Momentum</title>
     <div style="background-color: #FBFCFC">
-    <a href = "/" style="color:black"> <font size="6";> <b> Optimization Algorithms </b></font> </a>
+    <a href = "/" style="color:black; text-decoration: none;"> <font size="6";> <b> Optimization Algorithms </b></font> </a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/grad_des" style="color:black"> <font size="4"> Gradient Descent </font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/steepest_des" style="color:black"> <font size="4">  Steepest Descent </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/gdm" style="color:black"> <font size="5">  Gradient Descent with Momentum </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/rmsprop" style="color:black"> <font size="4">  RMSprop </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/adam" style="color:black"> <font size="4">  Adam </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/grad_des" style="color:black; text-decoration: none;"> <font size="4"> Gradient Descent </font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/steepest_des" style="color:black; text-decoration: none;"> <font size="4">  Steepest Descent </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/gdm" style="color:black; text-decoration: none;"> <font size="5">  Gradient Descent with Momentum </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/rmsprop" style="color:black; text-decoration: none;"> <font size="4">  RMSprop </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href = "/adam" style="color:black; text-decoration: none;"> <font size="4">  Adam </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
     <h1 align="center" size="13">
     <font  style="background-color: #FBFCFC" > Gradient Descent with Momentum </font>
     </h1>
+    <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Create three equal columns that floats next to each other */
+    .column {
+      float: left;
+      width: 33.33%;
+      padding: 10px;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+ </style>
 </head>
 {% endblock %}
 
 {% block body %}
-<body style="background-image: url('static/math2.jpeg')">
-
-<div class = "content" style="background-image: url('static/fon.jpg')">
-    <img style = "position:absolute; TOP: 500px LEFT:900px;" src = "{{url_for('static', filename='gdm.gif')}}" alt = "Gradient Descent with Momentum Plot" width="500">
-    <form action="{{url_for('gd_with_m') }}" method="post" style = "text-align: center;">
+<body style="background-image: url('static/backgrounds/math2.jpeg')">
+<div class = "row" style="background-image: url('static/backgrounds/fon.jpg')">
+    <div class="column">
+        <img src = "{{url_for('static', filename= string_variable + '.gif')}}"  alt = "Gradient Descent with Momentum Plot" width="500">
+    </div>
+    <div class="column">
+        <form action="{{url_for('gd_with_m') }}" method="post" style = "text-align: center;">
         <br/>
         <b> Range of X values: </b><br />
-        <input type="text" name="startx" size="12" placeholder="Start">
-        <input type="text" name="endx" size="12" placeholder="End">
-        <input type="text" name="incx" size="12" placeholder="Increment"> <br /><br />
+        <b> Start: </b> <input type="text" name="startx" size="12" value="-5">
+        <b> End: </b> <input type="text" name="endx" size="12" value="5"><br /><br />
 
         <b> Range of Y values: </b><br />
-        <input type="text" name="starty" size="12" placeholder="Start">
-        <input type="text" name="endy" size="12" placeholder="End">
-        <input type="text" name="incy" size="12" placeholder="Increment"> <br /><br />
+        <b> Start: </b> <input type="text" name="starty" size="12" value="-5">
+        <b> End: </b> <input type="text" name="endy" size="12" value="5"><br /><br />
 
-        <b> Function: </b><br />
-        <input type="text" name="q[0][0]" size="12" placeholder="q[0][0]">
-        <input type="text" name="q[0][1]" size="12" placeholder="q[0][1]"><br /><br />
-        <input type="text" name="q[1][0]" size="12" placeholder="q[1][0]">
-        <input type="text" name="q[1][1]" size="12" placeholder="q[1][1]"><br /><br />
-        <input type="text" name="b[0]" size="12" placeholder="b[0]">
-        <input type="text" name="b[1]" size="12" placeholder="b[1]"><br /><br />
-        <input type="text" name="c" size="12" placeholder="c"><br /><br />
+        <b> Function Coefficients: </b><br />
+        <b> x<sup>2</sup>: </b> <input type="text" name="q[0][0]" size="12" value="1">
+        <b> x*y: </b> <input type="text" name="q[0][1]" size="12" value="0"><br /><br />
+        <b> y*x: </b> <input type="text" name="q[1][0]" size="12" value="0">
+        <b> y<sup>2</sup>: </b> <input type="text" name="q[1][1]" size="12" value="2"><br /><br />
+        <b> x: </b> <input type="text" name="b[0]" size="12" value="0">
+        <b> y: </b> <input type="text" name="b[1]" size="12" value="0"><br /><br />
+        <b> Constant: </b> <input type="text" name="c" size="12" value="0"><br /><br />
 
         <b> Starting Point: </b><br />
-        <input type="text" name="x0" size="12" placeholder="x0">
-        <input type="text" name="y0" size="12" placeholder="y0"> <br /><br />
+        <b> x<sub>0</sub>: </b> <input type="text" name="x0" size="12" value="-5">
+        <b> y<sub>0</sub>: </b> <input type="text" name="y0" size="12" value="-5"> <br /><br />
 
         <b> Parameters: </b><br />
-        <input type="text" name="alpha" size="12" placeholder="Alpha">
-        <input type="text" name="beta" size="12" placeholder="Beta">
-        <input type="text" name="precision" size="12" placeholder="Precision"><br /><br />
+        <b> Alpha: </b> <input type="text" name="alpha" size="12" value="0.1">
+        <b> Beta: </b> <input type="text" name="beta" size="12" value="0.9"><br /><br />
+        <b> Precision: </b> <input type="text" name="precision" size="12" value="0.0001"><br /><br />
 
-        <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" ><br /><br />
+        <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value="50"><br /><br />
 
         <input type="submit" name="submit" value="Plot"><br/><br/>
 
     </form>
+    </div>
+        <div class="column" style="background-color: #FBFCFC">
+        <p>
+           Momentum is a method that helps accelerate SGD in the relevant direction and dampens oscillations.
+            It does this by adding a fraction beta of the update vector of the past time step to the current update vector.
+        </p>
+        <h1 style=" text-align: center;font-size:125%;" ><b>Algorithm</b></h1>
+        <p >
+
+            <b>1.</b> Pick a starting value. <br/>
+            <b>2.</b> Pick number of iterations.<br/>
+            <b>3.</b> Calculate the new point while x<sub>new</sub> - x<sub>old</sub> > precision. <br/><br/>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;V<sub>i</sub> := beta * V<sub>i-1</sub> + (1 - beta) * df/dx<sub>old</sub>
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;x<sub>new</sub> := x<sub>old</sub> - alpha *
+        </p>
+
+        <h1 style="text-align: center;font-size:100%;"><b>Hyperparameters</b></h1>
+        <p>
+            The momentum term beta is usually set to 0.9 or a similiar value.
+        </p>
+    </div>
 
 </div>
 <br/><br/><br/><br/><br/>
@@ -69,7 +109,8 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href = "https://medium.com/novaresearchlab" style="color:white"> Medium </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href = "https://twitter.com/novaresearchlab" style="color:white"> Twitter </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href = "/https://www.facebook.com/novaresearchlab" style="color:white">  Facebook </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "https://www.facebook.com/novaresearchlab" style="color:white">  Facebook </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href = "https://github.com/fzehracetin" style="color:white">  Github </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      <br/><br/><br/>
  </footer>
 </body>
