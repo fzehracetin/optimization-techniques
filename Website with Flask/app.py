@@ -17,27 +17,42 @@ def index():
 
 @app.route('/grad_des')
 def grad_des():
-    return render_template('grad_des.html', string_variable="gradient_descent")
+    return render_template('grad_des.html', string_variable="gradient_descent",
+                           startx="-5", endx=5, starty="-5", endy="5",
+                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
+                           precision="0.0001", eps="0.05", max_iter="50")
 
 
 @app.route('/steepest_des')
 def steepest_des():
-    return render_template('steepest_des.html', string_variable="steepest_descent")
+    return render_template('steepest_des.html', string_variable="steepest_descent",
+                           startx="-5", endx=5, starty="-5", endy="5",
+                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
+                           precision="0.0001", max_iter="50")
 
 
 @app.route('/gdm')
 def gdm():
-    return render_template('gdm.html', string_variable="gdm")
+    return render_template('gdm.html', string_variable="gdm",
+                           startx="-5", endx=5, starty="-5", endy="5",
+                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
+                           precision="0.0001", alpha="0.1", beta="0.9", max_iter="50")
 
 
 @app.route('/rmsprop')
 def RMSprop():
-    return render_template('rmsprop.html', string_variable="rmsprop")
+    return render_template('rmsprop.html', string_variable="rmsprop",
+                           startx="-5", endx=5, starty="-5", endy="5",
+                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
+                           precision="0.0001", alpha="0.1", beta="0.9", max_iter="50")
 
 
 @app.route('/adam')
 def adam_alg():
-    return render_template('adam.html', string_variable="adam")
+    return render_template('adam.html', string_variable="adam",
+                           startx="-5", endx=5, starty="-5", endy="5",
+                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
+                           precision="0.0001", alpha="0.1", beta1="0.9", beta2="0.99", max_iter="50", eps="0.05")
 
 
 def f(x, q, b, c, n=2):
@@ -74,14 +89,21 @@ def z_func(x_old, q, b, c):
 
     df = sym.Matrix([[sym.diff(f2(x, y, q, b, c), x),
                       sym.diff(f2(x, y, q, b, c), y)]])
+
     z = x1 - t1 * df
 
     z = f2(z[0], z[1], q, b, c)
+
     z_diff = sym.diff(z, t)
-    eqn = sym.Eq(z_diff)
+
+    eqn = sym.Eq(z_diff, 0)
+
     sol = sym.solve(eqn, t)
+
     sym.expr = sol[0]
+
     sym.expr = sym.expr.subs([(x, x_old[0][0]), (y, x_old[0][1])])
+
     return sym.expr
 
 
@@ -134,6 +156,7 @@ def make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0):
 
         new_frame = imageio.imread('img.png')
         frames.append(new_frame)
+        print("\r {}/{} written.".format(i, len(x_list)))
 
     name = str(time.time())
     name = name.replace('.', '')
@@ -344,7 +367,10 @@ def gradient_descent():
     Z1 = f(X_new, q, b, c)
     x_list, y_list = grad_descent(q, b, c, x0, y0, eps, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name)
+    return render_template(path, string_variable=name,
+                           startx=startx, endx=endx, starty=starty, endy=endy,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           precision=precision, eps=eps, max_iter=max_iter)
 
 
 @app.route('/steepest_des', methods=['POST'])
@@ -365,18 +391,22 @@ def steepest_descent():
          [request.form['q[1][0]'], request.form['q[1][1]']]]
     b = [request.form['b[0]'], request.form['b[1]']]
     c = request.form['c']
-
+    print("qqqq", q)
     X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
     for i in range(2):
         q[i] = list(map(float, q[i]))
     b = list(map(float, b))
     c = list(map(float, c))
+    print("qqqq", q)
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = steepest(q, b, c, x0, y0, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name)
+    return render_template(path, string_variable=name,
+                           startx=startx, endx=endx, starty=starty, endy=endy,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           precision=precision, max_iter=max_iter)
 
 
 @app.route('/gdm', methods=['POST'])
@@ -410,7 +440,10 @@ def gd_with_m():
     Z1 = f(X_new, q, b, c)
     x_list, y_list = gd_with_momentum(q, b, c, x0, y0, alpha, beta, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name)
+    return render_template(path, string_variable=name,
+                           startx=startx, endx=endx, starty=starty, endy=endy,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
 
 
 @app.route('/rmsprop', methods=['POST'])
@@ -444,7 +477,10 @@ def rms_prop():
     Z1 = f(X_new, q, b, c)
     x_list, y_list = rmsprop(q, b, c, x0, y0, alpha, beta, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name)
+    return render_template(path, string_variable=name,
+                           startx=startx, endx=endx, starty=starty, endy=endy,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
 
 
 @app.route('/adam', methods=['GET', 'POST'])
@@ -480,7 +516,10 @@ def ADAM():
     Z1 = f(X_new, q, b, c)
     x_list, y_list = adam(q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name)
+    return render_template(path, string_variable=name,
+                           startx=startx, endx=endx, starty=starty, endy=endy,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           precision=precision, alpha=alpha, beta1=beta1, beta2=beta2, eps=eps, max_iter=max_iter)
 
 
 if __name__ == "__main__":
