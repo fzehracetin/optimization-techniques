@@ -47,34 +47,32 @@
     <div class="column">
         <form action="{{url_for('gd_with_m') }}" method="post" style = "text-align: center;">
         <br/>
-        <b> Range of X values: </b><br />
-        <b> Start: </b> <input type="text" name="startx" size="12" value="-5">
-        <b> End: </b> <input type="text" name="endx" size="12" value="5"><br /><br />
+            <b> Range of X values: </b><br />
+            <b> Start: </b> <input type="text" name="startx" value={{startx}} size="12">
+            <b> End: </b> <input type="text" name="endx" value={{endx}} size="12"><br /><br />
 
-        <b> Range of Y values: </b><br />
-        <b> Start: </b> <input type="text" name="starty" size="12" value="-5">
-        <b> End: </b> <input type="text" name="endy" size="12" value="5"><br /><br />
+            <b> Range of Y values: </b><br />
+            <b> Start: </b> <input type="text" name="starty" value={{starty}} size="12">
+            <b> End: </b> <input type="text" name="endy" value={{endy}} size="12"><br /><br />
 
-        <b> Function Coefficients: </b><br />
-        <b> x<sup>2</sup>: </b> <input type="text" name="q[0][0]" size="12" value="1">
-        <b> x*y: </b> <input type="text" name="q[0][1]" size="12" value="0"><br /><br />
-        <b> y*x: </b> <input type="text" name="q[1][0]" size="12" value="0">
-        <b> y<sup>2</sup>: </b> <input type="text" name="q[1][1]" size="12" value="2"><br /><br />
-        <b> x: </b> <input type="text" name="b[0]" size="12" value="0">
-        <b> y: </b> <input type="text" name="b[1]" size="12" value="0"><br /><br />
-        <b> Constant: </b> <input type="text" name="c" size="12" value="0"><br /><br />
+            <b> Function Coefficients: </b><br />
+            <b> x<sup>2</sup>: </b> <input type="text" name="q[0][0]" value={{q00}} size="12">
+            <b> x*y: </b> <input type="text" name="q[0][1]" value={{q01}} size="12"><br /><br />
+            <b> y*x: </b> <input type="text" name="q[1][0]" value={{q10}} size="12">
+            <b> y<sup>2</sup>: </b> <input type="text" name="q[1][1]" value={{q11}} size="12"><br /><br />
+            <b> x: </b> <input type="text" name="b[0]" value={{b0}} size="12">
+            <b> y: </b> <input type="text" name="b[1]" value={{b1}} size="12"><br /><br />
+            <b> Constant: </b> <input type="text" name="c" value={{c}} size="12"><br /><br />
 
-        <b> Starting Point: </b><br />
-        <b> x<sub>0</sub>: </b> <input type="text" name="x0" size="12" value="-5">
-        <b> y<sub>0</sub>: </b> <input type="text" name="y0" size="12" value="-5"> <br /><br />
+            <b> Starting Point: </b><br />
+            <b> x<sub>0</sub>: </b> <input type="text" name="x0" id="x0" value={{x0}} size="12">
+            <b> y<sub>0</sub>: </b> <input type="text" name="y0" id="y0" value={{y0}} size="12" > <br /><br />
 
         <b> Parameters: </b><br />
-        <b> Alpha: </b> <input type="text" name="alpha" size="12" value="0.1">
-        <b> Beta: </b> <input type="text" name="beta" size="12" value="0.9"><br /><br />
-        <b> Precision: </b> <input type="text" name="precision" size="12" value="0.0001"><br /><br />
-
-        <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value="50"><br /><br />
-
+        <b> Alpha: </b> <input type="text" name="alpha" size="12" value={{alpha}}>
+        <b> Beta: </b> <input type="text" name="beta" size="12" value={{beta}}><br /><br />
+        <b> Precision: </b> <input type="text" name="precision" value={{precision}} size="12" ><br /><br />
+        <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value={{max_iter}}><br /><br />
         <input type="submit" name="submit" value="Plot"><br/><br/>
 
     </form>
@@ -91,12 +89,12 @@
             <b>2.</b> Pick number of iterations.<br/>
             <b>3.</b> Calculate the new point while x<sub>new</sub> - x<sub>old</sub> > precision. <br/><br/>
             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;V<sub>i</sub> := beta * V<sub>i-1</sub> + (1 - beta) * df/dx<sub>old</sub>
-            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;x<sub>new</sub> := x<sub>old</sub> - alpha *
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;x<sub>new</sub> := x<sub>old</sub> - alpha *V<sub>i</sub>
         </p>
 
         <h1 style="text-align: center;font-size:100%;"><b>Hyperparameters</b></h1>
         <p>
-            The momentum term beta is usually set to 0.9 or a similiar value.
+            The momentum term <b>beta</b> is usually set to 0.9 or a similiar value.
         </p>
     </div>
 
