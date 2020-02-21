@@ -52,7 +52,7 @@ def adam_alg():
     return render_template('adam.html', string_variable="adam",
                            startx="-5", endx=5, starty="-5", endy="5",
                            q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
-                           precision="0.0001", alpha="0.1", beta1="0.9", beta2="0.99", max_iter="50", eps="0.05")
+                           precision="0.0001", alpha="0.1", beta1="0.9", beta2="0.999", max_iter="50", eps="0.00000001")
 
 
 def f(x, q, b, c, n=2):
@@ -70,17 +70,17 @@ def f(x, q, b, c, n=2):
 
 
 def f2(x, y, q, b, c):
-    z = q[0][0] * x * x + q[0][1] * x * y + q[1][0] * y * x + q[1][1] * y * y + b[0] * x + b[1] * y + c[0]
+    z = q[0][0] * x * x + q[0][1] * x * y + q[1][0] * y * x + q[1][1] * y * y + b[0] * x + b[1] * y + c
     return z
 
 
 def f_mesh(x, y, q, b, c):
     z = np.zeros(len(x))
-    z = q[0][0] * x * x + q[0][1] * x * y + q[1][0] * y * x + q[1][1] * y * y + b[0] * x + b[1] * y + c[0]
+    z = q[0][0] * x * x + q[0][1] * x * y + q[1][0] * y * x + q[1][1] * y * y + b[0] * x + b[1] * y + c
     return z
 
 
-def z_func(x_old, q, b, c):
+def z_func(x_old, q, b, c, eps=0.000000000001):
     x, y, t = sym.symbols('x y t')
 
     x1 = sym.Matrix([[x, y]])
@@ -102,8 +102,8 @@ def z_func(x_old, q, b, c):
 
     sym.expr = sol[0]
 
-    sym.expr = sym.expr.subs([(x, x_old[0][0]), (y, x_old[0][1])])
-
+    sym.expr = sym.expr.subs([(x, x_old[0][0]), (y, x_old[0][1] + eps)])
+    print("sym: ", sym.expr )
     return sym.expr
 
 
@@ -178,7 +178,7 @@ def grad_descent(q, b, c, x0, y0, eps=0.05, precision=0.0001, max_iter=200):
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
 
-    while np.all(abs(X_new - X_old)) > precision and max_iter > i:
+    while np.sum(abs(X_new - X_old)) > precision and max_iter > i:
         Xs = np.append(Xs, X_new, axis=0)
         Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
         Ys = np.append(Ys, Y_new, axis=0)
@@ -211,7 +211,7 @@ def steepest(q, b, c, x0, y0, precision=0.0001, max_iter=200):
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
 
-    while np.all(abs(X_new - X_old)) > precision and max_iter > i:
+    while np.sum(abs(X_new - X_old)) > precision and max_iter > i:
         Xs = np.append(Xs, X_new, axis=0)
         Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
         Ys = np.append(Ys, Y_new, axis=0)
@@ -243,7 +243,8 @@ def gd_with_momentum(q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, ma
     x, y = sym.symbols('x y')
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
-    while np.all(abs(X_new - X_old)) > precision and max_iter > i:
+
+    while np.sum(abs(X_new - X_old)) > precision and max_iter > i:
         Xs = np.append(Xs, X_new, axis=0)
         Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
         Ys = np.append(Ys, Y_new, axis=0)
@@ -276,7 +277,8 @@ def rmsprop (q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=2
     x, y = sym.symbols('x y')
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
-    while np.all(abs(X_new - X_old)) > precision and max_iter > i:
+
+    while np.sum(abs(X_new - X_old)) > precision and max_iter > i:
         Xs = np.append(Xs, X_new, axis=0)
         Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
         Ys = np.append(Ys, Y_new, axis=0)
@@ -287,7 +289,7 @@ def rmsprop (q, b, c, x0, y0, alpha=0.10, beta=0.9, precision=0.0001, max_iter=2
         S[i] = beta * S[i - 1] + (1 - beta) * np.power(dfr, 2)
 
         X_new = X_new - alpha * dfr / np.sqrt(S[i])
-        alpha *= 0.99
+        # alpha *= 0.99
     print("Finished with {} step".format(i))
     if i < max_iter:
         Xs = np.append(Xs, X_new, axis=0)
@@ -314,7 +316,7 @@ def adam(q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, pre
     df1 = sym.diff(f2(x, y, q, b, c), x)
     df2 = sym.diff(f2(x, y, q, b, c), y)
 
-    while np.all(abs(X_new - X_old)) > precision and max_iter > i:
+    while np.sum(abs(X_new - X_old)) > precision and max_iter > i:
         Xs = np.append(Xs, X_new, axis=0)
         Y_new[0] = f2(X_new[0][0], X_new[0][1], q, b, c)
         Ys = np.append(Ys, Y_new, axis=0)
@@ -327,7 +329,7 @@ def adam(q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, pre
         V_corr = V[i] / (1 - np.power(beta1, i))
         S_corr = S[i] / (1 - np.power(beta2, i))
         X_new = X_new - alpha * V_corr / (np.sqrt(S_corr) + eps)
-        alpha *= 0.99
+        # alpha *= 0.99
 
     print("Finished with {} step".format(i))
     if i < max_iter:
@@ -362,14 +364,14 @@ def gradient_descent():
     for i in range(2):
         q[i] = list(map(float, q[i]))
     b = list(map(float, b))
-    c = list(map(float, c))
+    c = float(c)
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = grad_descent(q, b, c, x0, y0, eps, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
     return render_template(path, string_variable=name,
                            startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
                            precision=precision, eps=eps, max_iter=max_iter)
 
 
@@ -397,7 +399,7 @@ def steepest_descent():
     for i in range(2):
         q[i] = list(map(float, q[i]))
     b = list(map(float, b))
-    c = list(map(float, c))
+    c = float(c)
     print("qqqq", q)
 
     Z1 = f(X_new, q, b, c)
@@ -405,7 +407,7 @@ def steepest_descent():
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
     return render_template(path, string_variable=name,
                            startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
                            precision=precision, max_iter=max_iter)
 
 
@@ -435,14 +437,14 @@ def gd_with_m():
     for i in range(2):
         q[i] = list(map(float, q[i]))
     b = list(map(float, b))
-    c = list(map(float, c))
+    c = float(c)
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = gd_with_momentum(q, b, c, x0, y0, alpha, beta, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
     return render_template(path, string_variable=name,
                            startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
                            precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
 
 
@@ -472,14 +474,14 @@ def rms_prop():
     for i in range(2):
         q[i] = list(map(float, q[i]))
     b = list(map(float, b))
-    c = list(map(float, c))
+    c = float(c)
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = rmsprop(q, b, c, x0, y0, alpha, beta, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
     return render_template(path, string_variable=name,
                            startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
                            precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
 
 
@@ -511,14 +513,14 @@ def ADAM():
     for i in range(2):
         q[i] = list(map(float, q[i]))
     b = list(map(float, b))
-    c = list(map(float, c))
+    c = float(c)
 
     Z1 = f(X_new, q, b, c)
     x_list, y_list = adam(q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
     name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
     return render_template(path, string_variable=name,
                            startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c[0], x0=x0, y0=y0,
+                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
                            precision=precision, alpha=alpha, beta1=beta1, beta2=beta2, eps=eps, max_iter=max_iter)
 
 
