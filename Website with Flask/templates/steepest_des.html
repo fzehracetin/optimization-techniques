@@ -3,17 +3,18 @@
 {% block head %}
 <head>
     <title>Steepest Descent</title>
-    <div style="background-color: #FBFCFC">
-    <a href = "/" style="color:black; text-decoration: none;"> <font size="6";> <b> Optimization Algorithms </b></font> </a>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/grad_des" style="color:black; text-decoration: none;"> <font size="4"> Gradient Descent </font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/steepest_des" style="color:black; text-decoration: none;"> <font size="5">  Steepest Descent </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/gdm" style="color:black; text-decoration: none;"> <font size="4">  Gradient Descent with Momentum </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/rmsprop" style="color:black; text-decoration: none;"> <font size="4">  RMSprop </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/adam" style="color:black; text-decoration: none;"> <font size="4">  Adam </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div style="background-color: #19181B" align="justify">
+        <a href = "http://nova.yildiz.edu.tr/"><img src = "{{url_for('static', filename= 'nova.png')}}" alt = "nova" width="65"></a>
+    <a href = "/" style="color: black; text-decoration: none;  position: absolute; left: 80px; top: 12px;color:white"> <font size="6" > <b> Optimization Algorithms </b></font> </a>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/grad_des" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4"> Gradient Descent </font></a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/steepest_des" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="5">  Steepest Descent </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/gdm" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Gradient Descent with Momentum </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/rmsprop" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  RMSprop </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/adam" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Adam </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 </div>
     <h1 align="center" size="13">
-    <font  style="background-color: #FBFCFC" > Steepest Descent Algorithm </font>
+    <font  style="background-color: #191A19; color: #FFE1AA" > Steepest Descent Algorithm </font>
     </h1>
     <style>
     * {
@@ -38,8 +39,8 @@
 {% endblock %}
 
 {% block body %}
-<body style="background-image: url('static/backgrounds/math2.jpeg')">
-<div  class = "row" style="background-image: url('static/backgrounds/fon.jpg')">
+<body style="background-image: url('static/backgrounds/math2.png')">
+<div  class = "row" style="background-color: #FBFCFC">
     <div class="column">
         <img src = "{{url_for('static', filename= string_variable + '.gif')}}"  alt = "Steepest Descent Plot" width="500">
     </div>
@@ -71,11 +72,11 @@
             <b> Precision: </b> <input type="text" name="precision" value={{precision}} size="12" ><br /><br />
             <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value={{max_iter}}><br /><br />
 
-        <input type="submit" name="submit" value="Plot"><br/><br/>
+        <input type="submit" name="submit" value="Plot">
     </form>
     </div>
-    <div class="column" style="background-color: #FBFCFC">
-        <h1 style=" text-align: center;font-size:125%;" ><b>Algorithm</b></h1>
+    <div class="column" style="background-color: #191A19; color: white">
+        <h1 style=" text-align: center;font-size:125%; color: #D5E5FE" ><b>Algorithm</b></h1>
         <p >
 
             <b>1.</b> Pick a starting value. <br/>
@@ -86,6 +87,11 @@
         &emsp;&emsp;&emsp;&emsp;z(eps) = x - eps *  df/dx<sub>old</sub><br/>
         Find eps point where f'(z(eps)) = 0
         </p>
+                <h1 style="text-align: center;font-size:100%;color: #D5E5FE"><b>Hyperparameters</b></h1>
+        <p>
+            <b>Precision</b> is the quality of being exact. Thus, with the smaller precision value, we can get more accurate solutions.
+        </p>
+        <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     </div>
 
 

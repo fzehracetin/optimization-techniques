@@ -2,17 +2,18 @@
 {% block head %}
 <head>
     <title>Gradient Descent</title>
-    <div style="background-color: #FBFCFC">
-    <a href = "/" style="color: black; text-decoration: none;"> <font size="6" > <b> Optimization Algorithms </b></font> </a>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/grad_des" style="color:black;text-decoration: none;"> <font size="5"> Gradient Descent </font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/steepest_des" style="color:black;text-decoration: none;"> <font size="4">  Steepest Descent </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/gdm" style="color:black;text-decoration: none;"> <font size="4">  Gradient Descent with Momentum </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/rmsprop" style="color:black;text-decoration: none;"> <font size="4">  RMSprop </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/adam" style="color:black;text-decoration: none;"> <font size="4">  Adam </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div style="background-color: #19181B" align="justify">
+        <a href = "http://nova.yildiz.edu.tr/"><img src = "{{url_for('static', filename= 'nova.png')}}" alt = "nova" width="65"></a>
+    <a href = "/" style="color: black; text-decoration: none; color:white; position: absolute; left: 80px; top: 12px;"> <font size="6" > <b> Optimization Algorithms </b></font> </a>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/grad_des" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="5"> Gradient Descent </font></a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/steepest_des" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Steepest Descent </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/gdm" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Gradient Descent with Momentum </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/rmsprop" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  RMSprop </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/adam" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Adam </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 </div>
     <h1 align="center" size="13">
-    <font  style="background-color: #FBFCFC" > Gradient Descent Algorithm </font>
+    <font  style="background-color: #191A19; color: #FFE1AA" > Gradient Descent Algorithm </font>
     </h1>
 
 <style>
@@ -38,12 +39,12 @@
 {% endblock %}
 
 {% block body %}
-<body style="background-image: url('static/backgrounds/math2.jpeg')">
-<div class = "row" style="background-image: url('static/backgrounds/fon.jpg')">
+<body style="background-image: url('static/backgrounds/math2.png')">
+<div class = "row" style="background-color: #FBFCFC" >
     <div class="column">
             <img id="img" src = "{{url_for('static', filename= string_variable + '.gif')}}" alt = "Gradient Descent Plot" width="500">
     </div>
-    <div class="column">
+    <div class="column" >
         <form action="{{url_for('gradient_descent') }}" method="post" style = "text-align: center">
             <b> Range of X values: </b><br />
             <b> Start: </b> <input type="text" name="startx" value={{startx}} size="12">
@@ -71,13 +72,13 @@
             <b> Epsilon: </b> <input type="text" name="eps" size="12" value={{eps}}><br /><br />
             <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value={{max_iter}}><br /><br />
 
-            <input type="submit" name="submit" id="submit" value="Plot" ><br/><br/>
+            <input type="submit" name="submit" id="submit" value="Plot" >
 
         </form>
     </div>
 
-    <div class="column" style="background-color: #FBFCFC">
-        <h1 style=" text-align: center;font-size:125%;" ><b>Algorithm</b></h1>
+    <div class="column" style="background-color: #191A19; color: white">
+        <h1 style=" text-align: center;font-size:125%; color: #D5E5FE" ><b>Algorithm</b></h1>
         <p >
 
             <b>1.</b> Pick a starting value. <br/>
@@ -86,15 +87,18 @@
 
         </p>
         <p style="text-align: center;font-size:100%;"> x<sub>new</sub> := x<sub>old</sub> - epsilon * df/dx<sub>old</sub></p>
-        <h3 style="text-align: center;font-size:100%;"><b>Epsilon</b></h3>
+        <h3 style="text-align: center;font-size:100%;color: #D5E5FE"><b>Hyperparameters</b></h3>
         <p>
 
             <b>Epsilon</b> is the size of the steps. <br/>
 
             We can cower more area with larger steps/<b>higher epsilons</b> but are at the risk of
             overshooting the minima. On the other hand, small steps/<b>smaller epsilons</b> will consume a lot of time to reach
-            the lowest point.
+            the lowest point.<br/><br/>
+
+            <b>Precision</b> is the quality of being exact. Thus, with the smaller precision value, we can get more accurate solutions.
         </p>
+        <br/><br/><br/><br/><br/><br/><br/><br/>
     </div>
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 </div>

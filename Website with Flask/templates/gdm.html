@@ -3,18 +3,18 @@
 {% block head %}
 <head>
     <title>Gradient Descent with Momentum</title>
-    <div style="background-color: #FBFCFC">
-    <a href = "/" style="color:black; text-decoration: none;"> <font size="6";> <b> Optimization Algorithms </b></font> </a>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/grad_des" style="color:black; text-decoration: none;"> <font size="4"> Gradient Descent </font></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/steepest_des" style="color:black; text-decoration: none;"> <font size="4">  Steepest Descent </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/gdm" style="color:black; text-decoration: none;"> <font size="5">  Gradient Descent with Momentum </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/rmsprop" style="color:black; text-decoration: none;"> <font size="4">  RMSprop </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href = "/adam" style="color:black; text-decoration: none;"> <font size="4">  Adam </font> </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div style="background-color: #19181B" align="justify">
+        <a href = "http://nova.yildiz.edu.tr/"><img src = "{{url_for('static', filename= 'nova.png')}}" alt = "nova" width="65"></a>
+    <a href = "/" style="color: black; text-decoration: none;  position: absolute; left: 80px; top: 12px;color:white"> <font size="6" > <b> Optimization Algorithms </b></font> </a>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/grad_des" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4"> Gradient Descent </font></a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/steepest_des" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Steepest Descent </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/gdm" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="5">  Gradient Descent with Momentum </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/rmsprop" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  RMSprop </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/adam" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Adam </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 </div>
-
     <h1 align="center" size="13">
-    <font  style="background-color: #FBFCFC" > Gradient Descent with Momentum </font>
+    <font  style="background-color: #191A19; color: #FFE1AA" > Gradient Descent with Momentum </font>
     </h1>
     <style>
     * {
@@ -39,8 +39,8 @@
 {% endblock %}
 
 {% block body %}
-<body style="background-image: url('static/backgrounds/math2.jpeg')">
-<div class = "row" style="background-image: url('static/backgrounds/fon.jpg')">
+<body style="background-image: url('static/backgrounds/math2.png')">
+<div class = "row" style="background-color: #FBFCFC">
     <div class="column">
         <img src = "{{url_for('static', filename= string_variable + '.gif')}}"  alt = "Gradient Descent with Momentum Plot" width="500">
     </div>
@@ -73,16 +73,16 @@
         <b> Beta: </b> <input type="text" name="beta" size="12" value={{beta}}><br /><br />
         <b> Precision: </b> <input type="text" name="precision" value={{precision}} size="12" ><br /><br />
         <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value={{max_iter}}><br /><br />
-        <input type="submit" name="submit" value="Plot"><br/><br/>
+        <input type="submit" name="submit" value="Plot">
 
     </form>
     </div>
-        <div class="column" style="background-color: #FBFCFC">
+        <div class="column" style="background-color: #191A19; color: white">
         <p>
            Momentum is a method that helps accelerate SGD in the relevant direction and dampens oscillations.
             It does this by adding a fraction beta of the update vector of the past time step to the current update vector.
         </p>
-        <h1 style=" text-align: center;font-size:125%;" ><b>Algorithm</b></h1>
+        <h1 style=" text-align: center;font-size:125%; color: #D5E5FE" ><b>Algorithm</b></h1>
         <p >
 
             <b>1.</b> Pick a starting value. <br/>
@@ -92,10 +92,13 @@
             &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;x<sub>new</sub> := x<sub>old</sub> - alpha *V<sub>i</sub>
         </p>
 
-        <h1 style="text-align: center;font-size:100%;"><b>Hyperparameters</b></h1>
+        <h1 style="text-align: center;font-size:100%;; color: #D5E5FE"><b>Hyperparameters</b></h1>
         <p>
-            The momentum term <b>beta</b> is usually set to 0.9 or a similiar value.
+            The momentum term <b>Beta</b> is usually set to 0.9 or a similiar value.<br/><br/>
+            <b>Alpha</b> needs to be tune with respect to Beta.<br/><br/>
+            <b>Precision</b> is the quality of being exact. Thus, with the smaller precision value, we can get more accurate solutions.
         </p>
+            <br/><br/><br/><br/><br/><br/>
     </div>
 
 </div>
