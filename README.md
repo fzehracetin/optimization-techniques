@@ -13,7 +13,7 @@ I made a [simple website](https://github.com/fzehracetin/optimization-techniques
 
 ![Screenshot from Site](Screenshots/index.png)
 
-![Screenshot from Game](Screenshots/g_d.png)
+![Screenshot from Game](Screenshots/gd.png)
 
 
 ### Resources
