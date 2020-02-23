@@ -18,41 +18,41 @@ def index():
 @app.route('/grad_des')
 def grad_des():
     return render_template('grad_des.html', string_variable="gradient_descent",
-                           startx="-5", endx=5, starty="-5", endy="5",
-                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
-                           precision="0.0001", eps="0.05", max_iter="50")
+                           startx="-20", endx="20", starty="-20", endy="20",
+                           q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                           precision="0.0001", eps="0.05", max_iter="75")
 
 
 @app.route('/steepest_des')
 def steepest_des():
     return render_template('steepest_des.html', string_variable="steepest_descent",
-                           startx="-5", endx=5, starty="-5", endy="5",
-                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
+                           startx="-20", endx="20", starty="-20", endy="20",
+                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-15", y0="-15",
                            precision="0.0001", max_iter="50")
 
 
 @app.route('/gdm')
 def gdm():
     return render_template('gdm.html', string_variable="gdm",
-                           startx="-5", endx=5, starty="-5", endy="5",
-                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
-                           precision="0.0001", alpha="0.1", beta="0.9", max_iter="50")
+                           startx="-20", endx="20", starty="-20", endy="20",
+                           q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                           precision="0.0001", alpha="0.1", beta="0.9", max_iter="70")
 
 
 @app.route('/rmsprop')
 def RMSprop():
     return render_template('rmsprop.html', string_variable="rmsprop",
-                           startx="-5", endx=5, starty="-5", endy="5",
-                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
-                           precision="0.0001", alpha="0.1", beta="0.9", max_iter="50")
+                           startx="-20", endx="20", starty="-20", endy="20",
+                           q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                           precision="0.0001", alpha="0.2", beta="0.9", max_iter="80")
 
 
 @app.route('/adam')
 def adam_alg():
     return render_template('adam.html', string_variable="adam",
-                           startx="-5", endx=5, starty="-5", endy="5",
-                           q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-5", y0="-5",
-                           precision="0.0001", alpha="0.1", beta1="0.9", beta2="0.999", max_iter="50", eps="0.00000001")
+                           startx="-20", endx="20", starty="-20", endy="20",
+                           q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                           precision="0.0001", alpha="0.2", beta1="0.9", beta2="0.999", max_iter="80", eps="0.00000001")
 
 
 def f(x, q, b, c, n=2):
