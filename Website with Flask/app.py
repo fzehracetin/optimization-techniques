@@ -15,6 +15,11 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/curiosities')
+def curiosities_and_wonders():
+    return render_template('curiosities.html')
+
+
 @app.route('/grad_des')
 def grad_des():
     return render_template('grad_des.html', string_variable="gradient_descent",
@@ -341,187 +346,244 @@ def adam(q, b, c, x0, y0, alpha=0.1, beta1=0.9, beta2=0.99, eps=0.000000001, pre
 
 @app.route('/grad_des', methods=['POST'])
 def gradient_descent():
-    path = "grad_des.html"
+    if request.form['button'] == 'Convex Function':
+        return render_template('grad_des.html', string_variable="gradient_descent",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", eps="0.05", max_iter="75")
+    elif request.form['button'] == 'Concave Function with Saddle Point':
+        return render_template('grad_des.html', string_variable="gradient_descent",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", eps="0.05", max_iter="75")
+    else:
+        path = "grad_des.html"
 
-    eps = float(request.form['eps'])
-    precision = float(request.form['precision'])
-    max_iter = int(request.form['max_iter'])
+        eps = float(request.form['eps'])
+        precision = float(request.form['precision'])
+        max_iter = int(request.form['max_iter'])
 
-    startx = float(request.form['startx'])
-    endx = float(request.form['endx'])
-    starty = float(request.form['starty'])
-    endy = float(request.form['endy'])
-    x0 = float(request.form['x0'])
-    y0 = float(request.form['y0'])
+        startx = float(request.form['startx'])
+        endx = float(request.form['endx'])
+        starty = float(request.form['starty'])
+        endy = float(request.form['endy'])
+        x0 = float(request.form['x0'])
+        y0 = float(request.form['y0'])
 
-    q = [[request.form['q[0][0]'], request.form['q[0][1]']],
-         [request.form['q[1][0]'], request.form['q[1][1]']]]
-    b = [request.form['b[0]'], request.form['b[1]']]
-    c = request.form['c']
+        q = [[request.form['q[0][0]'], request.form['q[0][1]']],
+             [request.form['q[1][0]'], request.form['q[1][1]']]]
+        b = [request.form['b[0]'], request.form['b[1]']]
+        c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
+        X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
-    for i in range(2):
-        q[i] = list(map(float, q[i]))
-    b = list(map(float, b))
-    c = float(c)
+        for i in range(2):
+            q[i] = list(map(float, q[i]))
+        b = list(map(float, b))
+        c = float(c)
 
-    Z1 = f(X_new, q, b, c)
-    x_list, y_list = grad_descent(q, b, c, x0, y0, eps, precision, max_iter)
-    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name,
-                           startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
-                           precision=precision, eps=eps, max_iter=max_iter)
+        Z1 = f(X_new, q, b, c)
+        x_list, y_list = grad_descent(q, b, c, x0, y0, eps, precision, max_iter)
+        name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+        return render_template(path, string_variable=name,
+                               startx=startx, endx=endx, starty=starty, endy=endy,
+                               q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
+                               precision=precision, eps=eps, max_iter=max_iter)
 
 
 @app.route('/steepest_des', methods=['POST'])
 def steepest_descent():
-    path = "steepest_des.html"
+    if request.form['button'] == 'Convex Function':
+        return render_template('steepest_des.html', string_variable="steepest_descent",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-15", y0="-15",
+                               precision="0.0001", max_iter="50")
+    elif request.form['button'] == 'Concave Function with Saddle Point':
+        return render_template('steepest_des.html', string_variable="steepest_descent",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="-15",
+                               precision="0.0001", max_iter="50")
+    else:
+        path = "steepest_des.html"
 
-    precision = float(request.form['precision'])
-    max_iter = int(request.form['max_iter'])
+        precision = float(request.form['precision'])
+        max_iter = int(request.form['max_iter'])
 
-    startx = float(request.form['startx'])
-    endx = float(request.form['endx'])
-    starty = float(request.form['starty'])
-    endy = float(request.form['endy'])
-    x0 = float(request.form['x0'])
-    y0 = float(request.form['y0'])
+        startx = float(request.form['startx'])
+        endx = float(request.form['endx'])
+        starty = float(request.form['starty'])
+        endy = float(request.form['endy'])
+        x0 = float(request.form['x0'])
+        y0 = float(request.form['y0'])
 
-    q = [[request.form['q[0][0]'], request.form['q[0][1]']],
-         [request.form['q[1][0]'], request.form['q[1][1]']]]
-    b = [request.form['b[0]'], request.form['b[1]']]
-    c = request.form['c']
-    print("qqqq", q)
-    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
+        q = [[request.form['q[0][0]'], request.form['q[0][1]']],
+             [request.form['q[1][0]'], request.form['q[1][1]']]]
+        b = [request.form['b[0]'], request.form['b[1]']]
+        c = request.form['c']
 
-    for i in range(2):
-        q[i] = list(map(float, q[i]))
-    b = list(map(float, b))
-    c = float(c)
-    print("qqqq", q)
+        X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
-    Z1 = f(X_new, q, b, c)
-    x_list, y_list = steepest(q, b, c, x0, y0, precision, max_iter)
-    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name,
-                           startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
-                           precision=precision, max_iter=max_iter)
+        for i in range(2):
+            q[i] = list(map(float, q[i]))
+        b = list(map(float, b))
+        c = float(c)
+        print("qqqq", q)
+
+        Z1 = f(X_new, q, b, c)
+        x_list, y_list = steepest(q, b, c, x0, y0, precision, max_iter)
+        name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+        return render_template(path, string_variable=name,
+                               startx=startx, endx=endx, starty=starty, endy=endy,
+                               q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
+                               precision=precision, max_iter=max_iter)
 
 
 @app.route('/gdm', methods=['POST'])
 def gd_with_m():
-    path = "gdm.html"
+    if request.form['button'] == 'Convex Function':
+        return render_template('gdm.html', string_variable="gdm",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", alpha="0.1", beta="0.9", max_iter="70")
+    elif request.form['button'] == 'Concave Function with Saddle Point':
+        return render_template('gdm.html', string_variable="gdm",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", alpha="0.1", beta="0.9", max_iter="70")
+    else:
+        path = "gdm.html"
 
-    precision = float(request.form['precision'])
-    max_iter = int(request.form['max_iter'])
-    alpha = float(request.form['alpha'])
-    beta = float(request.form['beta'])
+        precision = float(request.form['precision'])
+        max_iter = int(request.form['max_iter'])
+        alpha = float(request.form['alpha'])
+        beta = float(request.form['beta'])
 
-    startx = float(request.form['startx'])
-    endx = float(request.form['endx'])
-    starty = float(request.form['starty'])
-    endy = float(request.form['endy'])
-    x0 = float(request.form['x0'])
-    y0 = float(request.form['y0'])
+        startx = float(request.form['startx'])
+        endx = float(request.form['endx'])
+        starty = float(request.form['starty'])
+        endy = float(request.form['endy'])
+        x0 = float(request.form['x0'])
+        y0 = float(request.form['y0'])
 
-    q = [[request.form['q[0][0]'], request.form['q[0][1]']],
-         [request.form['q[1][0]'], request.form['q[1][1]']]]
-    b = [request.form['b[0]'], request.form['b[1]']]
-    c = request.form['c']
+        q = [[request.form['q[0][0]'], request.form['q[0][1]']],
+             [request.form['q[1][0]'], request.form['q[1][1]']]]
+        b = [request.form['b[0]'], request.form['b[1]']]
+        c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
+        X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
-    for i in range(2):
-        q[i] = list(map(float, q[i]))
-    b = list(map(float, b))
-    c = float(c)
+        for i in range(2):
+            q[i] = list(map(float, q[i]))
+        b = list(map(float, b))
+        c = float(c)
 
-    Z1 = f(X_new, q, b, c)
-    x_list, y_list = gd_with_momentum(q, b, c, x0, y0, alpha, beta, precision, max_iter)
-    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name,
-                           startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
-                           precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
+        Z1 = f(X_new, q, b, c)
+        x_list, y_list = gd_with_momentum(q, b, c, x0, y0, alpha, beta, precision, max_iter)
+        name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+        return render_template(path, string_variable=name,
+                               startx=startx, endx=endx, starty=starty, endy=endy,
+                               q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
+                               precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
 
 
 @app.route('/rmsprop', methods=['POST'])
 def rms_prop():
-    path = "rmsprop.html"
+    if request.form['button'] == 'Convex Function':
+        return render_template('rmsprop.html', string_variable="rmsprop",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", alpha="0.2", beta="0.9", max_iter="80")
+    elif request.form['button'] == 'Concave Function with Saddle Point':
+        return render_template('rmsprop.html', string_variable="rmsprop",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", alpha="0.2", beta="0.9", max_iter="80")
+    else:
+        path = "rmsprop.html"
 
-    precision = float(request.form['precision'])
-    max_iter = int(request.form['max_iter'])
-    alpha = float(request.form['alpha'])
-    beta = float(request.form['beta'])
+        precision = float(request.form['precision'])
+        max_iter = int(request.form['max_iter'])
+        alpha = float(request.form['alpha'])
+        beta = float(request.form['beta'])
 
-    startx = float(request.form['startx'])
-    endx = float(request.form['endx'])
-    starty = float(request.form['starty'])
-    endy = float(request.form['endy'])
-    x0 = float(request.form['x0'])
-    y0 = float(request.form['y0'])
+        startx = float(request.form['startx'])
+        endx = float(request.form['endx'])
+        starty = float(request.form['starty'])
+        endy = float(request.form['endy'])
+        x0 = float(request.form['x0'])
+        y0 = float(request.form['y0'])
 
-    q = [[request.form['q[0][0]'], request.form['q[0][1]']],
-         [request.form['q[1][0]'], request.form['q[1][1]']]]
-    b = [request.form['b[0]'], request.form['b[1]']]
-    c = request.form['c']
+        q = [[request.form['q[0][0]'], request.form['q[0][1]']],
+             [request.form['q[1][0]'], request.form['q[1][1]']]]
+        b = [request.form['b[0]'], request.form['b[1]']]
+        c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
+        X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
-    for i in range(2):
-        q[i] = list(map(float, q[i]))
-    b = list(map(float, b))
-    c = float(c)
+        for i in range(2):
+            q[i] = list(map(float, q[i]))
+        b = list(map(float, b))
+        c = float(c)
 
-    Z1 = f(X_new, q, b, c)
-    x_list, y_list = rmsprop(q, b, c, x0, y0, alpha, beta, precision, max_iter)
-    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name,
-                           startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
-                           precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
+        Z1 = f(X_new, q, b, c)
+        x_list, y_list = rmsprop(q, b, c, x0, y0, alpha, beta, precision, max_iter)
+        name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+        return render_template(path, string_variable=name,
+                               startx=startx, endx=endx, starty=starty, endy=endy,
+                               q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
+                               precision=precision, alpha=alpha, beta=beta, max_iter=max_iter)
 
 
 @app.route('/adam', methods=['GET', 'POST'])
 def ADAM():
-    path = "adam.html"
+    if request.form['button'] == 'Convex Function':
+        return render_template('adam.html', string_variable="adam",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="2", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", alpha="0.2", beta1="0.9", beta2="0.999", max_iter="80",
+                               eps="0.00000001")
+    elif request.form['button'] == 'Concave Function with Saddle Point':
+        return render_template('adam.html', string_variable="adam",
+                               startx="-20", endx="20", starty="-20", endy="20",
+                               q00="1", q01="0", q10="0", q11="-1", b0="0", b1="0", c="0", x0="-15", y0="0.1",
+                               precision="0.0001", alpha="0.2", beta1="0.9", beta2="0.999", max_iter="80",
+                               eps="0.00000001")
+    else:
+        path = "adam.html"
 
-    precision = float(request.form['precision'])
-    max_iter = int(request.form['max_iter'])
-    alpha = float(request.form['alpha'])
-    beta1 = float(request.form['beta1'])
-    beta2 = float(request.form['beta2'])
-    eps = float(request.form['eps'])
+        precision = float(request.form['precision'])
+        max_iter = int(request.form['max_iter'])
+        alpha = float(request.form['alpha'])
+        beta1 = float(request.form['beta1'])
+        beta2 = float(request.form['beta2'])
+        eps = float(request.form['eps'])
 
-    startx = float(request.form['startx'])
-    endx = float(request.form['endx'])
-    starty = float(request.form['starty'])
-    endy = float(request.form['endy'])
-    x0 = float(request.form['x0'])
-    y0 = float(request.form['y0'])
+        startx = float(request.form['startx'])
+        endx = float(request.form['endx'])
+        starty = float(request.form['starty'])
+        endy = float(request.form['endy'])
+        x0 = float(request.form['x0'])
+        y0 = float(request.form['y0'])
 
-    q = [[request.form['q[0][0]'], request.form['q[0][1]']],
-         [request.form['q[1][0]'], request.form['q[1][1]']]]
-    b = [request.form['b[0]'], request.form['b[1]']]
-    c = request.form['c']
+        q = [[request.form['q[0][0]'], request.form['q[0][1]']],
+             [request.form['q[1][0]'], request.form['q[1][1]']]]
+        b = [request.form['b[0]'], request.form['b[1]']]
+        c = request.form['c']
 
-    X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
+        X1, Y1, Z1, X_new = init(startx, endx, starty, endy)
 
-    for i in range(2):
-        q[i] = list(map(float, q[i]))
-    b = list(map(float, b))
-    c = float(c)
+        for i in range(2):
+            q[i] = list(map(float, q[i]))
+        b = list(map(float, b))
+        c = float(c)
 
-    Z1 = f(X_new, q, b, c)
-    x_list, y_list = adam(q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
-    name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
-    return render_template(path, string_variable=name,
-                           startx=startx, endx=endx, starty=starty, endy=endy,
-                           q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
-                           precision=precision, alpha=alpha, beta1=beta1, beta2=beta2, eps=eps, max_iter=max_iter)
+        Z1 = f(X_new, q, b, c)
+        x_list, y_list = adam(q, b, c, x0, y0, alpha, beta1, beta2, eps, precision, max_iter)
+        name = make_gif(X1, Y1, Z1, x_list, y_list, q, b, c, x0, y0)
+        return render_template(path, string_variable=name,
+                               startx=startx, endx=endx, starty=starty, endy=endy,
+                               q00=q[0][0], q01=q[0][1], q10=q[1][0], q11=q[1][1], b0=b[0], b1=b[1], c=c, x0=x0, y0=y0,
+                               precision=precision, alpha=alpha, beta1=beta1, beta2=beta2, eps=eps, max_iter=max_iter)
 
 
 if __name__ == "__main__":
