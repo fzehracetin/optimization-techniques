@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block head %}
+<head>
+    <title>Curiosities</title>
+    <div style="background-color: #19181B" align="justify">
+        <a href = "http://nova.yildiz.edu.tr/"><img src = "{{url_for('static', filename= 'nova.png')}}" alt = "nova" width="65"></a>
+    <a href = "/" style="text-decoration: none; color:white; position: absolute; left: 80px; top: 12px;"> <font size="6" > <b> Optimization Algorithms </b></font> </a>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/grad_des" style="text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4"> Gradient Descent </font></a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/steepest_des" style="text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Steepest Descent </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/gdm" style="text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Gradient Descent with Momentum </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/rmsprop" style="text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  RMSprop </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/adam" style="text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Adam </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/curiosities" style="text-decoration: none;text-align: center; color:#FFE1AA"> <font size="5">  Curiosities </font> </a>
+
+</div>
+<h1 align="center" size="13">
+<font  style="background-color: #191A19; color: #FFE1AA" > Behaviours of Optimization Algorithms Near a Saddle Point</font>
+</h1>
+    <style>
+    .content {
+      max-width: 800px;
+      margin: auto;
+      font-family: cambria;
+    }
+}
+</style>
+
+</head>
+{% endblock %}
+{% block body %}
+<body style="background-image: url('static/backgrounds/math2.png')">
+<div class="content" style="background-color: #FBFCFC" >
+    <div class="column" style="text-align: center">
+        <br/>
+        <h2 style="text-align: center">Gradient Descent Based Algorithms</h2>
+        <article>
+            <font size="4" >
+            Optimization algorithms works well when we try to optimize a convex function. On the other hand, when we try to
+            optimize a non-convex function with a saddle point, the situation is different. Gradient Descent based
+            optimization algorithms are successful most of the time with near a saddle point, except Steepest Descent.
+            When we are trying to optimize a function, the starting point that we choose is decisive. When we working with
+            a non-convex function with a saddle point, some starting points can cause our optimization algorithm to stuck in
+            a local minimum. Let's look at some examples.
+            </font>
+        </article>
+
+        <img src = "{{url_for('static', filename='Saddle Point.png')}}" alt = "Saddle Point" width="300">
+
+    </div>
+    <div class="column" style="text-align: center">
+        <article>
+            <font size="3" >
+            f(x,y)= x<sup>2</sup> - y<sup>2</sup>
+            </font><br/><br/>
+            <font size="4" >
+            This is a non-covex function with a saddle point. The red cross is (0, 0) point, the local minimum. Blue
+            dots are the middle of the hills. If we choose starting point from the middle (on y=0 line) then our
+            optimization algorithm will stuck on the local minimum.
+            </font><br/><br/>
+            <img src = "{{url_for('static', filename='0 noktası GD.gif')}}" alt = "Gradient Descent with Zero" width="500">
+        </article>
+    </div>
+        <div class="column" style="text-align: center">
+        <article>
+            <font size="3" >
+                Behaviour of Gradient Descent when starting in (-150.0, 0) point.
+            </font><br/><br/>
+            <img src = "{{url_for('static', filename='0 noktası Adam.gif')}}" alt = "Adam with Zero" width="500">
+        </article>
+    </div>
+
+    <div class="column" style="text-align: center">
+        <article>
+            <font size="3" >
+                Behaviour of Adam when starting in (-15.0, 0) point.
+            </font>
+        </article>
+    </div>
+    <div class="column" style="text-align: center">
+
+        <h2 style="text-align: center">Steepest Descent</h2>
+        <article>
+            <font size="4" >
+                Steepest Descent behaves different than the other Gradient Descent based algorithms. It
+                calculates the lowest possible slope and choose a direction. In that direction, it moves
+                until it finds the smallest point. After that, it iteratively choose direction and find a minimum in
+                that direction. This iteration will continue until it finds the global minimum.<br/><br/>
+
+                Steepest Descent works well in convex functions. But in non-convex functions, it will
+                stuck on local minimum or it goes to infinite, based on the starting point.
+            </font><br/><br/>
+            <img src = "{{url_for('static', filename='Saddlepoint with Steepest.gif')}}" alt = "Steepest with Zero" width="500">
+        </article>
+    </div>
+    <div class="column" style="text-align: center">
+    <article>
+        <font size="3" >
+            Steepest Descent goes to the infinite on non-convex function.
+        </font><br/><br/>
+        <img src = "{{url_for('static', filename='Saddlepoint with Steepest 2.gif')}}" alt = "Steepest with Zero" width="500">
+    </article>
+    </div>
+    <div class="column" style="text-align: center">
+        <article>
+            <font size="3" >
+                Steepest Descent stucks on local minima.
+            </font>
+        </article>
+    </div>
+
+    <br/><br/><br/>
+    </div>
+<br/><br/><br/><br/><br/>
+</div>
+<br/><br/><br/><br/><br/>
+ <footer style = "text-align: center; background-color: #191A19 ">
+        <br/>
+        <p style="color:white">Fatma Zehra Çetin</p>
+        <p style="color:white">© 2020 Nova Research Lab</p><br/>
+        &emsp;&emsp;&emsp;&emsp;
+        <a href = "https://medium.com/novaresearchlab" style="text-decoration: none;"> <img src = "{{url_for('static', filename= 'medium.png')}}" alt = "medium" width="40"> </a>&emsp;&emsp;&emsp;
+        <a href = "https://twitter.com/novaresearchlab" style="text-decoration: none;"> <img src = "{{url_for('static', filename= 'twitter.png')}}" alt = "twitter" width="40">  </a>&emsp;&emsp;&emsp;
+        <a href = "https://www.facebook.com/novaresearchlab" style="text-decoration: none;"> <img src = "{{url_for('static', filename= 'facebook.png')}}" alt = "facebook" width="40">  </a>&emsp;&emsp;&emsp;
+        <a href = "https://github.com/fzehracetin" style="text-decoration: none;">  <img src = "{{url_for('static', filename= 'github.png')}}" alt = "github" width="40">  </a>&emsp;&emsp;&emsp;
+     <br/><br/><br/>
+ </footer>
+</body>
+
+
+
+{% endblock %}

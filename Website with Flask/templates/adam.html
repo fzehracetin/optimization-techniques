@@ -12,30 +12,39 @@
     <a href = "/gdm" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  Gradient Descent with Momentum </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
     <a href = "/rmsprop" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="4">  RMSprop </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
     <a href = "/adam" style="color:black;text-decoration: none;text-align: center; color:#D5E5FE"> <font size="5">  Adam </font> </a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    <a href = "/curiosities" style="text-decoration: none;text-align: center; color:#FFE1AA"> <font size="4">  Curiosities </font> </a>
 </div>
 
     <h1 align="center" size="13">
     <font  style="background-color: #191A19; color: #FFE1AA" > Adam Algorithm </font>
     </h1>
-    <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    /* Create three equal columns that floats next to each other */
-    .column {
-      float: left;
-      width: 33.33%;
-      padding: 10px;
-    }
+/* Create three equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 10px;
+}
 
-    /* Clear floats after the columns */
-    .row:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
- </style>
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - makes the three columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+</style>
 </head>
 
 {% endblock %}
@@ -48,7 +57,10 @@
     </div>
     <div class="column">
         <form action="{{url_for('ADAM') }}" method="post" style = "text-align: center;">
-        <br/>
+            <b> Select a function: </b><br />
+            <input name="button" type="submit" value="Convex Function" >
+            <input name="button" type="submit" value="Concave Function with Saddle Point" ><br /><br />
+
             <b> Range of X values: </b><br />
             <b> Start: </b> <input type="text" name="startx" value={{startx}} size="12">
             <b> End: </b> <input type="text" name="endx" value={{endx}} size="12"><br /><br />
@@ -70,16 +82,16 @@
             <b> x<sub>0</sub>: </b> <input type="text" name="x0" id="x0" value={{x0}} size="12">
             <b> y<sub>0</sub>: </b> <input type="text" name="y0" id="y0" value={{y0}} size="12" > <br /><br />
 
-        <b> Parameters: </b><br />
-        <b> Alpha: </b> <input type="text" name="alpha" size="12" value={{alpha}}>
-        <b> Beta<sub>1</sub>: </b> <input type="text" name="beta1" size="12" value={{beta1}}><br /><br />
-        <b> Beta<sub>2</sub>: </b> <input type="text" name="beta2" size="12" value={{beta2}}>
-        <b> Precision: </b> <input type="text" name="precision" value={{precision}} size="12" ><br /><br />
-        <b> Epsilon: </b> <input type="text" name="eps" size="12" value={{eps}}><br /><br />
+            <b> Parameters: </b><br />
+            <b> Alpha: </b> <input type="text" name="alpha" size="12" value={{alpha}}>
+            <b> Beta<sub>1</sub>: </b> <input type="text" name="beta1" size="12" value={{beta1}}><br /><br />
+            <b> Beta<sub>2</sub>: </b> <input type="text" name="beta2" size="12" value={{beta2}}>
+            <b> Precision: </b> <input type="text" name="precision" value={{precision}} size="12" ><br /><br />
+            <b> Epsilon: </b> <input type="text" name="eps" size="12" value={{eps}}><br /><br />
 
-        <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value={{max_iter}}><br /><br />
+            <b> Maximum Iteration Number: </b><br /> <input type="text" name="max_iter" size="12" value={{max_iter}}><br /><br />
 
-        <input type="submit" name="submit" value="Plot">
+            <input name="button" type="submit" value="Optimize and Plot">
 
     </form>
     </div>
